@@ -1,0 +1,538 @@
+<div class="col-sm-3">
+
+			<img src="{{url('fv.png')}}" alt="" class="img-top-central">
+			
+		    <!-- Info Boxes Style 2 -->
+		    <div class="info-box mb-3 bg-primary small-box">
+		      {{-- <span class="info-box-icon"><i class="fas fa-tag"></i></span> --}}
+
+		      <div class="info-box-content">
+		        <span class="info-box-text"><span>{{trans('layout.summary_fv')}}</span> </span>
+		      </div>
+		      <!-- /.info-box-content -->
+		    </div>
+
+		    <div class="info-box mb-3 bg-default small-box">
+		      {{-- <span class="info-box-icon"><i class="fas fa-tag"></i></span> --}}
+
+		      <div class="info-box-content">
+		        <span class="info-box-text">{{trans('layout.n_proj')}} <span class="info-box-number-2" style="margin: 0;">{{App\Models\Land::where('technology',1)->count()}}</span> </span>
+		      </div>
+		      <!-- /.info-box-content -->
+		    </div>
+		    <!-- /.info-box -->
+		    <div class="info-box mb-3 bg-default small-box">
+		      {{-- <span class="info-box-icon"><i class="far fa-heart"></i></span> --}}
+
+		      <div class="info-box-content">
+		        <span class="info-box-text">{{trans('layout.n_mwp')}} <span class="info-box-number-2" style="margin: 0;">
+		          {{App\Models\Land::where('technology',1)->sum('mwp')}}
+		        </span> </span>
+		      </div>
+		      <!-- /.info-box-content -->
+		    </div>
+		    <!-- /.info-box -->
+		    <div class="info-box mb-3 bg-default small-box">
+		      {{-- <span class="info-box-icon"><i class="fas fa-cloud-download-alt"></i></span> --}}
+
+		      <div class="info-box-content">
+		        <span class="info-box-text">{{trans('layout.n_mwn')}} <span class="info-box-number-2" style="margin: 0;">
+		          {{App\Models\Land::where('technology',1)->sum('mwn')}}
+		        </span> </span>
+		      </div>
+		      <!-- /.info-box-content -->
+		    </div>
+		    <!-- /.info-box -->
+		    <div class="info-box mb-3 bg-default small-box">
+		      {{-- <span class="info-box-icon"><i class="far fa-comment"></i></span> --}}
+
+		      <div class="info-box-content">
+		        <span class="info-box-text">{{trans('layout.conc')}} <span class="info-box-number-2" style="margin: 0;">
+		          {{App\Models\Land::where('technology',1)->whereExists(function($q){
+		            $q->from('permissions')
+		              ->whereRaw('permissions.land_id = lands.id')
+		              ->whereRaw('permissions.tramitation_type = "Concurso"');
+		          })->count()}}
+		        </span> </span>
+		      </div>
+		      <!-- /.info-box-content -->
+		    </div>
+		    <!-- /.info-box -->
+		    <div class="info-box mb-3 bg-default small-box">
+		      {{-- <span class="info-box-icon"><i class="far fa-heart"></i></span> --}}
+
+		      <div class="info-box-content">
+		        <span class="info-box-text">{{trans('layout.solic')}} <span class="info-box-number-2" style="margin: 0;">
+		          {{App\Models\Land::where('technology',1)->whereExists(function($q){
+		            $q->from('permissions')
+		              ->whereRaw('permissions.land_id = lands.id')
+		              ->whereRaw('permissions.tramitation_type = "Solicitud AyC"');
+		          })->count()}}
+		        </span> </span>
+		      </div>
+		      <!-- /.info-box-content -->
+		    </div>
+		    <!-- /.card -->
+		</div>
+
+		<div class="col-sm-3">
+
+			<img src="{{url('gh.png')}}" alt="" class="img-top-central">
+			
+		    <!-- Info Boxes Style 2 -->
+		    <div class="info-box mb-3 bg-primary small-box">
+		      {{-- <span class="info-box-icon"><i class="fas fa-tag"></i></span> --}}
+
+		      <div class="info-box-content">
+		        <span class="info-box-text"><span>{{trans('layout.summary_gh')}}</span> </span>
+		      </div>
+		      <!-- /.info-box-content -->
+		    </div>
+
+		    <div class="info-box mb-3 bg-default small-box">
+		      {{-- <span class="info-box-icon"><i class="fas fa-tag"></i></span> --}}
+
+		      <div class="info-box-content">
+		        <span class="info-box-text">{{trans('layout.n_proj')}} <span class="info-box-number-2" style="margin: 0;">{{App\Models\Land::where('technology',2)->count()}}</span> </span>
+		      </div>
+		      <!-- /.info-box-content -->
+		    </div>
+		    <!-- /.info-box -->
+		    <div class="info-box mb-3 bg-default small-box">
+		      {{-- <span class="info-box-icon"><i class="far fa-heart"></i></span> --}}
+
+		      <div class="info-box-content">
+		        <span class="info-box-text">{{trans('layout.n_mwp')}} <span class="info-box-number-2" style="margin: 0;">
+		          {{App\Models\Land::where('technology',2)->sum('mwp')}}
+		        </span> </span>
+		      </div>
+		      <!-- /.info-box-content -->
+		    </div>
+		    <!-- /.info-box -->
+		    <div class="info-box mb-3 bg-default small-box">
+		      {{-- <span class="info-box-icon"><i class="fas fa-cloud-download-alt"></i></span> --}}
+
+		      <div class="info-box-content">
+		        <span class="info-box-text">{{trans('layout.n_mwn')}} <span class="info-box-number-2" style="margin: 0;">
+		          {{App\Models\Land::where('technology',2)->sum('mwn')}}
+		        </span> </span>
+		      </div>
+		      <!-- /.info-box-content -->
+		    </div>
+		    <!-- /.info-box -->
+		    <div class="info-box mb-3 bg-default small-box">
+		      {{-- <span class="info-box-icon"><i class="far fa-comment"></i></span> --}}
+
+		      <div class="info-box-content">
+		        <span class="info-box-text">{{trans('layout.conc')}} <span class="info-box-number-2" style="margin: 0;">
+		          {{App\Models\Land::where('technology',2)->whereExists(function($q){
+		            $q->from('permissions')
+		              ->whereRaw('permissions.land_id = lands.id')
+		              ->whereRaw('permissions.tramitation_type = "Concurso"');
+		          })->count()}}
+		        </span> </span>
+		      </div>
+		      <!-- /.info-box-content -->
+		    </div>
+		    <!-- /.info-box -->
+		    <div class="info-box mb-3 bg-default small-box">
+		      {{-- <span class="info-box-icon"><i class="far fa-heart"></i></span> --}}
+
+		      <div class="info-box-content">
+		        <span class="info-box-text">{{trans('layout.solic')}} <span class="info-box-number-2" style="margin: 0;">
+		          {{App\Models\Land::where('technology',2)->whereExists(function($q){
+		            $q->from('permissions')
+		              ->whereRaw('permissions.land_id = lands.id')
+		              ->whereRaw('permissions.tramitation_type = "Solicitud AyC"');
+		          })->count()}}
+		        </span> </span>
+		      </div>
+		      <!-- /.info-box-content -->
+		    </div>
+		    <!-- /.card -->
+		</div>
+
+		<div class="col-sm-3">
+
+			<img src="{{url('st.png')}}" alt="" class="img-top-central">
+		
+		    <!-- Info Boxes Style 2 -->
+		    <div class="info-box mb-3 bg-primary small-box">
+		      {{-- <span class="info-box-icon"><i class="fas fa-tag"></i></span> --}}
+
+		      <div class="info-box-content">
+		        <span class="info-box-text"><span>{{trans('layout.summary_st')}}</span> </span>
+		      </div>
+		      <!-- /.info-box-content -->
+		    </div>
+
+		    <div class="info-box mb-3 bg-default small-box">
+		      {{-- <span class="info-box-icon"><i class="fas fa-tag"></i></span> --}}
+
+		      <div class="info-box-content">
+		        <span class="info-box-text">{{trans('layout.n_proj')}} <span class="info-box-number-2" style="margin: 0;">{{App\Models\Land::where('technology',3)->count()}}</span> </span>
+		      </div>
+		      <!-- /.info-box-content -->
+		    </div>
+		    <!-- /.info-box -->
+		    <div class="info-box mb-3 bg-default small-box">
+		      {{-- <span class="info-box-icon"><i class="far fa-heart"></i></span> --}}
+
+		      <div class="info-box-content">
+		        <span class="info-box-text">{{trans('layout.n_mwp')}} <span class="info-box-number-2" style="margin: 0;">
+		          {{App\Models\Land::where('technology',3)->sum('mwp')}}
+		        </span> </span>
+		      </div>
+		      <!-- /.info-box-content -->
+		    </div>
+		    <!-- /.info-box -->
+		    <div class="info-box mb-3 bg-default small-box">
+		      {{-- <span class="info-box-icon"><i class="fas fa-cloud-download-alt"></i></span> --}}
+
+		      <div class="info-box-content">
+		        <span class="info-box-text">{{trans('layout.n_mwn')}} <span class="info-box-number-2" style="margin: 0;">
+		          {{App\Models\Land::where('technology',3)->sum('mwn')}}
+		        </span> </span>
+		      </div>
+		      <!-- /.info-box-content -->
+		    </div>
+		    <!-- /.info-box -->
+		    <div class="info-box mb-3 bg-default small-box">
+		      {{-- <span class="info-box-icon"><i class="far fa-comment"></i></span> --}}
+
+		      <div class="info-box-content">
+		        <span class="info-box-text">{{trans('layout.conc')}} <span class="info-box-number-2" style="margin: 0;">
+		          {{App\Models\Land::where('technology',3)->whereExists(function($q){
+		            $q->from('permissions')
+		              ->whereRaw('permissions.land_id = lands.id')
+		              ->whereRaw('permissions.tramitation_type = "Concurso"');
+		          })->count()}}
+		        </span> </span>
+		      </div>
+		      <!-- /.info-box-content -->
+		    </div>
+		    <!-- /.info-box -->
+		    <div class="info-box mb-3 bg-default small-box">
+		      {{-- <span class="info-box-icon"><i class="far fa-heart"></i></span> --}}
+
+		      <div class="info-box-content">
+		        <span class="info-box-text">{{trans('layout.solic')}} <span class="info-box-number-2" style="margin: 0;">
+		          {{App\Models\Land::where('technology',3)->whereExists(function($q){
+		            $q->from('permissions')
+		              ->whereRaw('permissions.land_id = lands.id')
+		              ->whereRaw('permissions.tramitation_type = "Solicitud AyC"');
+		          })->count()}}
+		        </span> </span>
+		      </div>
+		      <!-- /.info-box-content -->
+		    </div>
+		</div>
+
+		<div class="col-sm-3">
+
+			<img src="{{url('dc.png')}}" alt="" class="img-top-central">
+		
+		    <!-- Info Boxes Style 2 -->
+		    <div class="info-box mb-3 bg-primary small-box">
+		      {{-- <span class="info-box-icon"><i class="fas fa-tag"></i></span> --}}
+
+		      <div class="info-box-content">
+		        <span class="info-box-text"><span>{{trans('layout.summary_dc')}}</span> </span>
+		      </div>
+		      <!-- /.info-box-content -->
+		    </div>
+
+		    <div class="info-box mb-3 bg-default small-box">
+		      {{-- <span class="info-box-icon"><i class="fas fa-tag"></i></span> --}}
+
+		      <div class="info-box-content">
+		        <span class="info-box-text">{{trans('layout.n_proj')}} <span class="info-box-number-2" style="margin: 0;">{{App\Models\Land::where('technology',4)->count()}}</span> </span>
+		      </div>
+		      <!-- /.info-box-content -->
+		    </div>
+		    <!-- /.info-box -->
+		    <div class="info-box mb-3 bg-default small-box">
+		      {{-- <span class="info-box-icon"><i class="far fa-heart"></i></span> --}}
+
+		      <div class="info-box-content">
+		        <span class="info-box-text">{{trans('layout.n_mwp')}} <span class="info-box-number-2" style="margin: 0;">
+		          {{App\Models\Land::where('technology',4)->sum('mwp')}}
+		        </span> </span>
+		      </div>
+		      <!-- /.info-box-content -->
+		    </div>
+		    <!-- /.info-box -->
+		    <div class="info-box mb-3 bg-default small-box">
+		      {{-- <span class="info-box-icon"><i class="fas fa-cloud-download-alt"></i></span> --}}
+
+		      <div class="info-box-content">
+		        <span class="info-box-text">{{trans('layout.n_mwn')}} <span class="info-box-number-2" style="margin: 0;">
+		          {{App\Models\Land::where('technology',4)->sum('mwn')}}
+		        </span> </span>
+		      </div>
+		      <!-- /.info-box-content -->
+		    </div>
+		    <!-- /.info-box -->
+		    {{-- <div class="info-box mb-3 bg-default small-box">
+
+		      <div class="info-box-content">
+		        <span class="info-box-text">Concursos <span class="info-box-number-2" style="margin: 0;">
+		          {{App\Models\Land::where('technology',4)->whereExists(function($q){
+		            $q->from('permissions')
+		              ->whereRaw('permissions.land_id = lands.id')
+		              ->whereRaw('permissions.tramitation_type = "Concurso"');
+		          })->count()}}
+		        </span> </span>
+		      </div>
+		      <!-- /.info-box-content -->
+		    </div>
+		    <!-- /.info-box -->
+		    <div class="info-box mb-3 bg-default small-box">
+
+		      <div class="info-box-content">
+		        <span class="info-box-text">Solicitud AyC <span class="info-box-number-2" style="margin: 0;">
+		          {{App\Models\Land::where('technology',4)->whereExists(function($q){
+		            $q->from('permissions')
+		              ->whereRaw('permissions.land_id = lands.id')
+		              ->whereRaw('permissions.tramitation_type = "Solicitud AyC"');
+		          })->count()}}
+		        </span> </span>
+		      </div>
+		      <!-- /.info-box-content -->
+		    </div> --}}
+		</div>
+
+
+		@if ($r->GH)
+@foreach (App\Models\Land::where('analisys_state',1)->where('contract_state',2)->where('technology',2)->get() as $l)
+@if ($l->lat && $l->lng)
+  &markers=color:green%7Clabel:G%7C{{$l->lat}},{{$l->lng}}
+@endif
+@endforeach
+@endif
+
+@if ($r->ST)
+@foreach (App\Models\Land::where('analisys_state',1)->where('contract_state',2)->where('technology',3)->get() as $l)
+@if ($l->lat && $l->lng)
+  &markers=color:black%7Clabel:S%7C{{$l->lat}},{{$l->lng}}
+@endif
+@endforeach
+@endif
+
+@if ($r->DC)
+@foreach (App\Models\Land::where('analisys_state',1)->where('contract_state',2)->where('technology',4)->get() as $l)
+@if ($l->lat && $l->lng)
+  &markers=color:yellow%7Clabel:D%7C{{$l->lat}},{{$l->lng}}
+@endif
+@endforeach
+@endif
+
+
+
+
+
+
+
+
+@if ($r->GH)
+		<td width="25%">
+			<div class="col-sm-3">
+				
+			    <!-- Info Boxes Style 2 -->
+			    <div class="info-box mb-3 bg-primary small-box">
+			      {{-- <span class="info-box-icon"><i class="fas fa-tag"></i></span> --}}
+
+			      <div class="info-box-content">
+			        <span class="info-box-text"><span>{{trans('layout.summary_gh')}}</span> </span>
+			      </div>
+			      <!-- /.info-box-content -->
+			    </div>
+
+			    <div class="info-box mb-3 bg-default small-box">
+			      {{-- <span class="info-box-icon"><i class="fas fa-tag"></i></span> --}}
+
+			      <div class="info-box-content">
+			        <span class="info-box-text">{{trans('layout.n_proj')}}<span class="info-box-number-2" style="margin: 0;">{{App\Models\Land::where('technology',2)->count()}}</span> </span>
+			      </div>
+			      <!-- /.info-box-content -->
+			    </div>
+			    <!-- /.info-box -->
+			    <div class="info-box mb-3 bg-default small-box">
+			      {{-- <span class="info-box-icon"><i class="far fa-heart"></i></span> --}}
+
+			      <div class="info-box-content">
+			        <span class="info-box-text">{{trans('layout.n_mwp')}} <span class="info-box-number-2" style="margin: 0;">
+			          {{App\Models\Land::where('technology',2)->sum('mwp')}}
+			        </span> </span>
+			      </div>
+			      <!-- /.info-box-content -->
+			    </div>
+			    <!-- /.info-box -->
+			    <div class="info-box mb-3 bg-default small-box">
+			      {{-- <span class="info-box-icon"><i class="fas fa-cloud-download-alt"></i></span> --}}
+
+			      <div class="info-box-content">
+			        <span class="info-box-text">{{trans('layout.n_mwn')}} <span class="info-box-number-2" style="margin: 0;">
+			          {{App\Models\Land::where('technology',2)->sum('mwn')}}
+			        </span> </span>
+			      </div>
+			      <!-- /.info-box-content -->
+			    </div>
+			    <!-- /.info-box -->
+			    <div class="info-box mb-3 bg-default small-box">
+			      {{-- <span class="info-box-icon"><i class="far fa-comment"></i></span> --}}
+
+			      <div class="info-box-content">
+			        <span class="info-box-text">{{trans('layout.conc')}} <span class="info-box-number-2" style="margin: 0;">
+			          {{App\Models\Land::where('technology',2)->whereExists(function($q){
+			            $q->from('permissions')
+			              ->whereRaw('permissions.land_id = lands.id')
+			              ->whereRaw('permissions.tramitation_type = "Concurso"');
+			          })->count()}}
+			        </span> </span>
+			      </div>
+			      <!-- /.info-box-content -->
+			    </div>
+			    <!-- /.info-box -->
+			    <div class="info-box mb-3 bg-default small-box">
+			      {{-- <span class="info-box-icon"><i class="far fa-heart"></i></span> --}}
+
+			      <div class="info-box-content">
+			        <span class="info-box-text">{{trans('layout.solic')}} <span class="info-box-number-2" style="margin: 0;">
+			          {{App\Models\Land::where('technology',2)->whereExists(function($q){
+			            $q->from('permissions')
+			              ->whereRaw('permissions.land_id = lands.id')
+			              ->whereRaw('permissions.tramitation_type = "Solicitud AyC"');
+			          })->count()}}
+			        </span> </span>
+			      </div>
+			      <!-- /.info-box-content -->
+			    </div>
+			    <!-- /.card -->
+			</div>
+		</td>
+		@endif
+		@if ($r->ST)
+		<td width="25%">
+			<div class="col-sm-3">
+
+			    <!-- Info Boxes Style 2 -->
+			    <div class="info-box mb-3 bg-primary small-box">
+			      {{-- <span class="info-box-icon"><i class="fas fa-tag"></i></span> --}}
+
+			      <div class="info-box-content">
+			        <span class="info-box-text"><span>{{trans('layout.summary_st')}}</span> </span>
+			      </div>
+			      <!-- /.info-box-content -->
+			    </div>
+
+			    <div class="info-box mb-3 bg-default small-box">
+			      {{-- <span class="info-box-icon"><i class="fas fa-tag"></i></span> --}}
+
+			      <div class="info-box-content">
+			        <span class="info-box-text">{{trans('layout.n_proj')}} <span class="info-box-number-2" style="margin: 0;">{{App\Models\Land::where('technology',3)->count()}}</span> </span>
+			      </div>
+			      <!-- /.info-box-content -->
+			    </div>
+			    <!-- /.info-box -->
+			    <div class="info-box mb-3 bg-default small-box">
+			      {{-- <span class="info-box-icon"><i class="far fa-heart"></i></span> --}}
+
+			      <div class="info-box-content">
+			        <span class="info-box-text">{{trans('layout.n_mwp')}} <span class="info-box-number-2" style="margin: 0;">
+			          {{App\Models\Land::where('technology',3)->sum('mwp')}}
+			        </span> </span>
+			      </div>
+			      <!-- /.info-box-content -->
+			    </div>
+			    <!-- /.info-box -->
+			    <div class="info-box mb-3 bg-default small-box">
+			      {{-- <span class="info-box-icon"><i class="fas fa-cloud-download-alt"></i></span> --}}
+
+			      <div class="info-box-content">
+			        <span class="info-box-text">{{trans('layout.n_mwn')}} <span class="info-box-number-2" style="margin: 0;">
+			          {{App\Models\Land::where('technology',3)->sum('mwn')}}
+			        </span> </span>
+			      </div>
+			      <!-- /.info-box-content -->
+			    </div>
+			    <!-- /.info-box -->
+			    <div class="info-box mb-3 bg-default small-box">
+			      {{-- <span class="info-box-icon"><i class="far fa-comment"></i></span> --}}
+
+			      <div class="info-box-content">
+			        <span class="info-box-text">{{trans('layout.conc')}} <span class="info-box-number-2" style="margin: 0;">
+			          {{App\Models\Land::where('technology',3)->whereExists(function($q){
+			            $q->from('permissions')
+			              ->whereRaw('permissions.land_id = lands.id')
+			              ->whereRaw('permissions.tramitation_type = "Concurso"');
+			          })->count()}}
+			        </span> </span>
+			      </div>
+			      <!-- /.info-box-content -->
+			    </div>
+			    <!-- /.info-box -->
+			    <div class="info-box mb-3 bg-default small-box">
+			      {{-- <span class="info-box-icon"><i class="far fa-heart"></i></span> --}}
+
+			      <div class="info-box-content">
+			        <span class="info-box-text">{{trans('layout.solic')}} <span class="info-box-number-2" style="margin: 0;">
+			          {{App\Models\Land::where('technology',3)->whereExists(function($q){
+			            $q->from('permissions')
+			              ->whereRaw('permissions.land_id = lands.id')
+			              ->whereRaw('permissions.tramitation_type = "Solicitud AyC"');
+			          })->count()}}
+			        </span> </span>
+			      </div>
+			      <!-- /.info-box-content -->
+			    </div>
+			</div>
+		</td>
+		@endif
+		@if ($r->DC)
+		<td width="25%">
+			<div class="col-sm-3">
+
+			    <!-- Info Boxes Style 2 -->
+			    <div class="info-box mb-3 bg-primary small-box">
+			      {{-- <span class="info-box-icon"><i class="fas fa-tag"></i></span> --}}
+
+			      <div class="info-box-content">
+			        <span class="info-box-text"><span>{{trans('layout.summary_dc')}}</span> </span>
+			      </div>
+			      <!-- /.info-box-content -->
+			    </div>
+
+			    <div class="info-box mb-3 bg-default small-box">
+			      {{-- <span class="info-box-icon"><i class="fas fa-tag"></i></span> --}}
+
+			      <div class="info-box-content">
+			        <span class="info-box-text">{{trans('layout.n_proj')}} <span class="info-box-number-2" style="margin: 0;">{{App\Models\Land::where('technology',4)->count()}}</span> </span>
+			      </div>
+			      <!-- /.info-box-content -->
+			    </div>
+			    <!-- /.info-box -->
+			    <div class="info-box mb-3 bg-default small-box">
+			      {{-- <span class="info-box-icon"><i class="far fa-heart"></i></span> --}}
+
+			      <div class="info-box-content">
+			        <span class="info-box-text">{{trans('layout.n_mwp')}} <span class="info-box-number-2" style="margin: 0;">
+			          {{App\Models\Land::where('technology',4)->sum('mwp')}}
+			        </span> </span>
+			      </div>
+			      <!-- /.info-box-content -->
+			    </div>
+			    <!-- /.info-box -->
+			    <div class="info-box mb-3 bg-default small-box">
+			      {{-- <span class="info-box-icon"><i class="fas fa-cloud-download-alt"></i></span> --}}
+
+			      <div class="info-box-content">
+			        <span class="info-box-text">{{trans('layout.n_mwn')}} <span class="info-box-number-2" style="margin: 0;">
+			          {{App\Models\Land::where('technology',4)->sum('mwn')}}
+			        </span> </span>
+			      </div>
+			      <!-- /.info-box-content -->
+			    </div>
+			</div>
+		</td>
+		@endif

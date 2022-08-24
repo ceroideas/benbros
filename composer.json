@@ -9,12 +9,15 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
+        "barryvdh/laravel-dompdf": "^1.0",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.12",
         "laravel/tinker": "^2.5",
-        "prestashop/prestashop-webservice-lib": "dev-master"
+        "maatwebsite/excel": "^3.1",
+        "predis/predis": "^1.1",
+        "psr/simple-cache": "^1.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
@@ -39,10 +42,7 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        },
-        "files": [
-            "vendor/prestaShop/prestaShop-webservice-lib/PSWebServiceLibrary.php"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {
