@@ -38,7 +38,7 @@
 			text-overflow: ellipsis;
 		    white-space: nowrap;
 		    overflow: hidden;
-			position: relative; top: 4px; display: block; width: 100%; text-align: left; font-size: 13px">{{ substr($value->url, 14,40) }} {{ strlen($value->url) > 54 ? '...' : '' }} </span>
+			position: relative; top: 4px; display: block; width: 100%; text-align: left; font-size: 13px">{{ substr($value->url, 14) }} {{ strlen($value->url) > 54 ? '' : '' }} </span>
 		</td>
 
 		<td>
@@ -133,7 +133,7 @@
 						</div>
 						<div class="modal-footer">
 							<a class="btn btn-sm btn-success" href="{{url('delete-ma-document',$value->id)}}">{{trans('documents.yes')}}</a>
-							<button class="btn btn-sm btn-danger">{{trans('documents.no')}}</button>
+							<button data-dismiss="modal" class="btn btn-sm btn-danger">{{trans('documents.no')}}</button>
 						</div>
 					</div>
 				</div>

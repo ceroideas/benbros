@@ -4,6 +4,7 @@ return [
 	'home' => 'Desktop',
 
 	'mw_accecpted' => 'MW accepted',
+	'mw_awarded' => 'MW awarded',
 	'mw_pending' => 'MW pending',
 	'mw_rejected' => 'MW denied',
 	'budget' => 'Budget',

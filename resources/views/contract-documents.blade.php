@@ -29,6 +29,10 @@
 		display: none;
 	}
 
+  .data-edit {
+    cursor: pointer;
+  }
+
 	.document-row:hover {
 		background-color: #eee;
 	}
@@ -145,7 +149,13 @@
 
         <input type="file" id="excel_file" style="display: none"/>
 
-        <div id="excel_data" class="mt-5 table-responsive"></div>
+        <div class="mt-5">
+          
+          Si ha modificado las celdas, presione <a href="javascript:;" onclick="reloadDT()">AQUÍ</a> para recargar la tabla y poder descargar el contenido modificado.
+
+        </div>
+
+        <div id="excel_data" class="table-responsive"></div>
       </div>
 
 
@@ -316,20 +326,20 @@
                         }
 
                         if (cell == becoming && typeof sheet_data[row][cell] == 'object') {
-                            all_notifications.push({'end': moment(sheet_data[row][cell]).add(6,'weeks').format('Y-MM-DD'),
-                              'duration': "6 semanas",
-                              'type':___type,
-                              'project': project_name})
+                            // all_notifications.push({'end': moment(sheet_data[row][cell]).add(6,'weeks').format('Y-MM-DD'),
+                            //   'duration': "6 semanas",
+                            //   'type':___type,
+                            //   'project': project_name})
 
-                            all_notifications.push({'end': moment(sheet_data[row][cell]).add(2,'weeks').format('Y-MM-DD'),
-                              'duration': "2 semanas",
-                              'type':___type,
-                              'project': project_name})
+                            // all_notifications.push({'end': moment(sheet_data[row][cell]).add(2,'weeks').format('Y-MM-DD'),
+                            //   'duration': "2 semanas",
+                            //   'type':___type,
+                            //   'project': project_name})
 
-                            all_notifications.push({'end': moment(sheet_data[row][cell]).add(1,'day').format('Y-MM-DD'),
-                              'duration': "dia anterior",
-                              'type':___type,
-                              'project': project_name})
+                            // all_notifications.push({'end': moment(sheet_data[row][cell]).add(1,'day').format('Y-MM-DD'),
+                            //   'duration': "dia anterior",
+                            //   'type':___type,
+                            //   'project': project_name})
 
                             all_notifications.push({'end': moment(sheet_data[row][cell]).format('Y-MM-DD'),
                               'duration': "mismo dia",
@@ -338,13 +348,13 @@
                         }
 
 
-                        table_output += '<td>'+
+                        table_output += '<td> <span class="data-edit" contenteditable>'+
 
                         ((cell == becoming && typeof sheet_data[row][cell] == 'object') ? '<span data-toggle="popover" data-content="Se ha generado un automatismo para fecha devengo prima." class="becoming">' : '') +(typeof sheet_data[row][cell] != 'undefined' ?
                           
                           (typeof sheet_data[row][cell] == 'object' ? moment(sheet_data[row][cell]).format('DD-MM-Y') : sheet_data[row][cell])
 
-                        : '')+ (cell == becoming && (typeof sheet_data[row][cell] == 'object') ? '</span>' : '') +'</td>';
+                        : '')+ (cell == becoming && (typeof sheet_data[row][cell] == 'object') ? '</span>' : '') +'</span></td>';
 
                       }
 
@@ -406,6 +416,13 @@
       }
   }
 
+  function reloadDT()
+  {
+    $("#example1").DataTable().destroy();
+    initDatatable();
+    alert('Contenido Actualizado!');
+  }
+
   function initDatatable() 
   {
     $("#example1").DataTable({
@@ -419,6 +436,10 @@
       "scrollX": true,
 
       "scrollCollapse": true,
+
+      buttons: [
+        'copy', 'csv', 'excel', 'print'
+      ],
 
       /*"fixedColumns": {
         left: 5
@@ -442,7 +463,10 @@
                     if ($(cell).hasClass('no-filter')) {
                       $(cell).addClass('sorting_disabled').html(title);
                     }else{
-                      $(cell).addClass('sorting_disabled').html('<input type="text" class="inline-fields" placeholder="' + title + '" />');
+                      if (title)
+                      {
+                        $(cell).addClass('sorting_disabled').html('<input type="text" class="inline-fields" placeholder="' + title + '" />');
+                      }
                     }
  
                     // On every keypress in this input
@@ -499,7 +523,7 @@
                         });
                 });
         }
-    });
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
   }
 
 </script>

@@ -23,6 +23,14 @@
         </div>
 
       	<div class="col-sm-12">
+
+          <div class="form-group">
+            <label>Tipo de Input</label>
+            <select name="type" class="form-control">
+              <option value="normal">Normal</option>
+              <option value="document">Documento</option>
+            </select>
+          </div>
       		
   	      <div class="form-group">
   	        <label>Título</label>

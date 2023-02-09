@@ -29,6 +29,7 @@ class PermissionsController extends Controller
 
     public function savePermissionInput(Request $r)
     {
+        return response()->json($r->all(),422);
         $this->validate($r,[
             'title'=>'required',
         ]);
@@ -47,6 +48,7 @@ class PermissionsController extends Controller
 
         $fr = new Input;
         $fr->section_id = $section;
+        $fr->type = $r->type;
         $fr->table = 'project';
         $fr->title = $r->title;
         $fr->info = $r->info;
@@ -54,18 +56,21 @@ class PermissionsController extends Controller
 
         /**/
 
-        $options = ['Si','No','En progreso'];
+        if ($r->type == 'normal') {
+            $options = ['Si','No','En progreso'];
 
-        foreach ($options as $key => $value) {
-            $io = new InputOption;
-            $io->input_id = $fr->id;
-            $io->option = $value;
-            $io->save();
+            foreach ($options as $key => $value) {
+                $io = new InputOption;
+                $io->input_id = $fr->id;
+                $io->option = $value;
+                $io->save();
+            }
         }
     }
 
     public function editPermissionInput(Request $r)
     {
+        return response()->json($r->all(),422);
         $this->validate($r,[
             'title'=>'required',
         ]);
@@ -84,18 +89,23 @@ class PermissionsController extends Controller
 
         $fr = Input::find($r->id);
         $fr->section_id = $section;
+        $fr->type = $r->type;
         $fr->table = 'project';
         $fr->title = $r->title;
         $fr->info = $r->info;
         $fr->save();
 
-        $options = ['Si','No','En progreso'];
+        InputOption::where('input_id',$fr->id)->delete();
 
-        foreach ($options as $key => $value) {
-            $io = new InputOption;
-            $io->input_id = $fr->id;
-            $io->option = $value;
-            $io->save();
+        if ($r->type == 'normal') {
+            $options = ['Si','No','En progreso'];
+
+            foreach ($options as $key => $value) {
+                $io = new InputOption;
+                $io->input_id = $fr->id;
+                $io->option = $value;
+                $io->save();
+            }
         }
     }
 
@@ -125,14 +135,32 @@ class PermissionsController extends Controller
 
         $extras = json_decode($e->land->extra_inputs,true);
         $editables = [];
+        $index = [];
 
-        foreach ($extras as $key => $value) {
-            foreach (json_decode($r->extras,true) as $key1 => $value1) {
-                if ($value['id'] == $value1['id']) {
-                    $editables[] = ['id' => $key, 'value' => $value1['value']];
+        foreach (json_decode($r->extras,true) as $key1 => $value1) {
+            $count = 0;
+            if ($extras) {
+                foreach ($extras as $key => $value) {
+                    if ($value['id'] == $value1['id']) {
+                        $editables[] = ['id' => $key, 'value' => $value1['value']];
+                        $count = 0;
+                        break;
+                    }else{
+                        $count++;
+                    }
                 }
+            }else{
+                $count++;
             }
+
+            if ($count>0) {
+
+                $extras[] = ['id' => $value1['id'], 'value' => $value1['value']];
+                
+            }
+
         }
+
         foreach ($editables as $key => $value) {
             $extras[$value['id']]['value'] = $value['value'];
         }
@@ -186,6 +214,17 @@ class PermissionsController extends Controller
         // $p = Permission::find($s->permission_id);
 
         // return view('permissions.activities',compact('p'))->render();
+    }
+
+    public function deleteASection($id)
+    {
+        $s = ActivitySection::find($id);
+        $s->delete();
+
+        // $p = Permission::find($s->permission_id);
+
+        // return view('permissions.activities',compact('p'))->render();
+        return back();
     }
     public function createActivity(Request $r)
     {

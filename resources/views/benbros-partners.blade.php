@@ -6,21 +6,18 @@
   .inline-fields {
     min-width: 100%;
   }
-  .mydocument {
-    display: none;
-  }
 </style>
 
 <section class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1>{{trans('extra.subcontrators')}}</h1>
+        <h1>Benbros {{trans('layout.associate')}}</h1>
       </div>
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="#">{{trans('layout.home')}}</a></li>
-          <li class="breadcrumb-item active">{{trans('extra.subcontrators')}}</li>
+          <li class="breadcrumb-item active">Benbros {{trans('layout.associate')}}</li>
         </ol>
       </div>
     </div>
@@ -34,7 +31,7 @@
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">{{trans('extra.business_reg')}}</h3>
+                <h3 class="card-title">{{trans('layout.registered_associate')}}</h3>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
@@ -42,23 +39,17 @@
                   <thead>
                   <tr>
                     <th>ID</th>
-                    <th>{{trans('extra.name')}}</th>
-                    <th>{{trans('extra.email')}}</th>
-                    <th>{{trans('extra.phone')}}</th>
-                    <th>{{trans('extra.address')}}</th>
+                    <th>{{trans('layout.name')}}</th>
                     <th width="240px"></th>
                   </tr>
                   </thead>
-                  <tbody id="all-business">
-                    @include('includes.all-business')
+                  <tbody id="all-partners">
+                    @include('includes.benbros-partners')
                   </tbody>
                   <tfoot>
                   <tr>
                     <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Email</th>
-                    <th>Teléfono</th>
-                    <th>Dirección</th>
+                    <th>{{trans('layout.name')}}</th>
                     <th></th>
                   </tr>
                   </tfoot>
@@ -67,7 +58,7 @@
                 <br>
 
                 {{-- <button class="btn btn-danger float-right" style="margin-left: 4px;">Delete Row/Column</button> --}}
-                <button class="btn btn-success float-right" id="add-partner" style="margin-left: 4px;">+{{trans('extra.add_column')}}</button>
+                <button class="btn btn-success float-right" id="add-partner" style="margin-left: 4px;">{{trans('layout.add_new_column')}}</button>
               </div>
               <!-- /.card-body -->
             </div>
@@ -96,8 +87,8 @@
 
     console.log('add-partner');
 
-    $.get('{{url('addSubcontractor')}}', function(data, textStatus) {
-      $('#all-business').html(data);
+    $.get('{{url('addBenbrosPartner')}}', function(data, textStatus) {
+      $('#all-partners').html(data);
     });
   });
 
@@ -118,7 +109,7 @@
     formData.append('_token','{{csrf_token()}}');
 
     $.ajax({
-      url: '{{url('saveSubcontractor')}}',
+      url: '{{url('saveBenbrosPartner')}}',
       type: 'POST',
       contentType: false,
       processData: false,
@@ -128,8 +119,8 @@
       console.log(data);
 
       var notice = PNotify.success({
-            title: "{{trans('extra.completed')}}",
-            text: "{{trans('extra.message')}}",
+            title: "Completado",
+            text: "Se ha guardado el socio correctamente",
             textTrusted: true,
             modules: {
               Buttons: {
@@ -147,46 +138,6 @@
     })
     .always(function() {
       console.log("complete");
-    });
-  }
-
-  $('.mydocument').change(function (e) {
-      e.preventDefault();
-
-      let type = $(this).data('type');
-      let id = $(this).data('id');
-      let fd = new FormData();
-
-      fd.append('document',$(this)[0].files[0]);
-      fd.append('_token','{{csrf_token()}}');
-      fd.append('id',id);
-      fd.append('type',type);
-
-      $.ajax({
-        url: '{{url('saveSubcontractorDocument')}}',
-        contentType: false,
-        processData: false,
-        type: 'POST',
-        data: fd,
-      })
-      .done(function(data) {
-        $('#docs-'+type+'-'+id).html(data);
-      })
-      .fail(function() {
-        console.log("error");
-      })
-      .always(function() {
-        console.log("complete");
-      });
-      
-    });
-
-  function changeDocumentStatus(i,j)
-  {
-    console.log(i,j.value);
-
-    $.post('{{url('changeDocumentStatus')}}', {_token: '{{csrf_token()}}', id: i, value: j.value}, function(data, textStatus, xhr) {
-      
     });
   }
 </script>

@@ -70,6 +70,7 @@
                             <tr>
                               <th>{{trans('extra.name')}}</th>
                               <th>{{trans('extra.last_name')}}</th>
+                              <th>{{trans('extra.company')}}</th>
                               <th>{{trans('extra.email')}}</th>
                               <th>{{trans('extra.phone')}}</th>
                               <th>{{trans('extra.position')}}</th>
@@ -118,6 +119,7 @@
                           <tr>
                               <th>{{trans('extra.name')}}</th>
                               <th>{{trans('extra.last_name')}}</th>
+                              <th>{{trans('extra.company')}}</th>
                               <th>{{trans('extra.email')}}</th>
                               <th>{{trans('extra.phone')}}</th>
                               <th>{{trans('extra.position')}}</th>

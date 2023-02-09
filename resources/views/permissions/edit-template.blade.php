@@ -12,7 +12,7 @@
   	        <label>Sección</label>
   	        <select name="section_id" class="form-control">
   	          @foreach (App\Models\Section::all() as $sect)
-                <option {{$sect->id == $inp->section_id}} value="{{$sect->id}}">{{$sect->name}}</option>
+                <option {{$sect->id == $inp->section_id ? 'selected' : ''}} value="{{$sect->id}}">{{$sect->name}}</option>
               @endforeach
   	        </select>
   	      </div>
@@ -25,6 +25,14 @@
         </div>
 
       	<div class="col-sm-12">
+
+          <div class="form-group">
+            <label>Tipo de Input</label>
+            <select name="type" class="form-control">
+              <option {{$sect->type == 'normal' ? 'selected' : ''}} value="normal">Normal</option>
+              <option {{$sect->type == 'document' ? 'selected' : ''}} value="document">Documento</option>
+            </select>
+          </div>
       		
   	      <div class="form-group">
   	        <label>Título</label>

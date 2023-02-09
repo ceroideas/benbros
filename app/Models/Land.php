@@ -27,4 +27,9 @@ class Land extends Model
     {
         return $this->belongsTo('App\Models\Partner');
     }
+
+    public function aval()
+    {
+        return $this->hasOne('App\Models\Endorsement');
+    }
 }

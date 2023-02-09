@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Partner;
+use App\Models\BenbrosPartner;
 use App\Models\Subcontractor;
 use App\Models\Contact;
 use App\Models\ContactSection;
@@ -17,6 +18,7 @@ use App\Models\Input;
 use App\Models\InputOption;
 use App\Models\ActivityDocument;
 use App\Models\ActivitySection;
+use App\Models\SubcontractorDocument;
 use App\Models\Activity;
 use App\Models\Section;
 use App\Models\Document;
@@ -28,6 +30,7 @@ use App\Models\Message;
 use App\Models\Notification;
 use App\Models\Translate;
 use App\Models\Technology;
+use App\Models\InputDocument;
 
 use App\Models\OtherInformation;
 use App\Models\MaDocument;
@@ -55,6 +58,42 @@ use App\Exports\ProjectsExport;
 
 class BackendController extends Controller
 {
+    public function exportWord(Request $r, $id)
+    {
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+        $phpWord->setDefaultFontName('Arial');
+        $phpWord->setDefaultFontSize('12');
+        \PhpOffice\PhpWord\Settings::setOutputEscapingEnabled(false);
+
+        /**/
+
+        $section = $phpWord->addSection();
+
+        $footer = $section->addFooter();
+        $footer->addPreserveText('{PAGE}',null, ['alignment' => 'right']);
+
+        $l = Land::find($id);
+        $p = Permission::where('land_id',$id)->first();
+        $a = Endorsement::where('land_id',$id)->first();
+
+        $html = view('word-report', compact('l','p','a','r'))->render();
+
+        \PhpOffice\PhpWord\Shared\Html::addHtml($section, $html, false, false);
+
+        // $section = $phpWord->addSection();
+        // $section->addText('ÍNDICE DE DOCUMENTOS',['name' => 'Times New Roman', 'size' => 12, 'bold'=> true],['alignment' => 'center']);
+        // $section->addText('Documento nº1: Poder General para pleitos');
+        // $section->addText('Documento nº2: Contrato de colaboración profesional de asesoría y gestoría');
+        // $section->addText('Documento nº3: Facturas impagadas');
+        // $section->addText('Documento nº4: Burofax remitido');
+        // $section->addText('Documento nº5: Justificante de recepción del burofax');
+
+        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        $name = Str::slug('reporte terreno '.$l->id.' '.$l->name.' '.Carbon::now()->format('d-m-Y H_i_s'),'-').'.docx';
+        $objWriter->save(public_path().'/documents/'.$name);
+        return response()->download(public_path().'/documents/'.$name);
+    }
+
     public function downloadPDF(Request $r, $id)
     {
         $l = Land::find($id);
@@ -113,6 +152,22 @@ class BackendController extends Controller
         return back()->with('msj',trans('layout.excel_loaded'));
     }
 
+    public function saveSubcontractorDocument(Request $r)
+    {
+        $name_file = $r->document->getClientOriginalName().(uniqid()).'.'.$r->document->getClientOriginalExtension();
+        $r->document->move(public_path().'/uploads/documents/subcontractors/' , $name_file);
+
+        $ad = new SubcontractorDocument;
+        $ad->subcontractor_id = $r->id;
+        $ad->type = $r->type;
+        $ad->url = $name_file;
+        $ad->save();
+
+        $a = SubcontractorDocument::where('subcontractor_id',$r->id)->where('type',$r->type)->get();
+
+        return view('includes.table-documents_sub',['documents' => $a, 'type' => $r->type])->render();
+    }
+
     public function generateReport(Request $r)
     {
         return Excel::download(new LandsExport($r->ids,$r->id), 'lands-export.xlsx');
@@ -157,8 +212,151 @@ class BackendController extends Controller
         }
     }
 
+    public function deleteSubcontractorDocument($id)
+    {
+        $l = SubcontractorDocument::find($id);
+        $l->delete();
+
+        return back();
+    }
+
+    public function changeDocumentStatus(Request $r)
+    {
+        $l = SubcontractorDocument::find($r->id);
+        $l->status = $r->value;
+        $l->save();
+    }
+
     public function migration()
     {
+
+        Schema::table('contacts', function(Blueprint $table) {
+            //
+            $table->string('company')->nullable();
+        });
+
+        return 'OK';
+
+        Schema::table('lands', function(Blueprint $table) {
+            $table->integer('main')->nullable();
+        });
+
+        return Land::find(1176);
+
+        $names = [[
+            "name" => "Raquel Redondo",
+            "email" => "raquel.redondo@benbros.es",
+            "position" => "Técnico",
+            "avatar" => "https://e7.pngegg.com/pngimages/134/822/png-clipart-computer-icons-business-man-people-logo.png"
+        ],[
+            "name" => "Carmen Salis",
+            "email" => "carmen.salis@benbros.es",
+            "position" => "Legal y Desarrollo",
+            "avatar" => "https://e7.pngegg.com/pngimages/134/822/png-clipart-computer-icons-business-man-people-logo.png"
+        ],[
+            "name" => "Valentín Martínez",
+            "email" => "valentin.martinez@benbros.es",
+            "position" => "Data center",
+            "avatar" => "https://e7.pngegg.com/pngimages/134/822/png-clipart-computer-icons-business-man-people-logo.png"
+        ],[
+            "name" => "Andrés Casco",
+            "email" => "andres.casco@benbros.es",
+            "position" => "Terrenos",
+            "avatar" => "https://e7.pngegg.com/pngimages/134/822/png-clipart-computer-icons-business-man-people-logo.png"
+        ],[
+            "name" => "Sonia De Juanas",
+            "email" => "sonia.dejuanas@benbros.es",
+            "position" => "Office Manager",
+            "avatar" => "https://e7.pngegg.com/pngimages/134/822/png-clipart-computer-icons-business-man-people-logo.png"
+        ]];
+
+        foreach ($names as $key => $value) {
+            copy($value['avatar'], public_path().'/uploads/avatars/'.basename($value['avatar']));
+            $u = new User;
+            $u->name = $value['name'];
+            $u->email = $value['email'];
+            $u->position = $value['position'];
+            $u->avatar = basename($value['avatar']);
+            $u->password = bcrypt('password');
+            $u->save();
+        }
+
+        return User::all();
+        
+        // Schema::table('users', function(Blueprint $table) {
+        //     //
+        //     $table->dropColumn('mwn');
+        //     $table->dropColumn('mwp');
+        // });
+
+        Schema::table('lands', function(Blueprint $table) {
+            //
+            $table->text('mwn')->nullable();
+            $table->text('mwp')->nullable();
+        });
+        // foreach (session('extras') as $key => $value) {
+        //     echo $key.' <br>';
+        // }
+
+        // return 'ok';
+
+        return Land::find(22);
+
+        Schema::table('lands', function(Blueprint $table) {
+            //
+            $table->dropColumn('carpeta');
+        });
+
+        Schema::table('lands', function(Blueprint $table) {
+            //
+            $table->string('carpeta')->nullable()->after('id');
+        });
+
+        return "Ok";
+        // return Land::whereIn('analisys_state',[1,3,7,10])->whereIn('contract_state',[6,8])->where('technology',1)->get();
+
+        // Endorsement::truncate();
+        // Land::truncate();
+        // Permission::truncate();
+        // Activity::truncate();
+        // ActivitySection::truncate();
+        // Schema::create('input_documents', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->integer('input_id')->nullable();
+        //     $table->integer('permission_id')->nullable();
+        //     $table->string('url')->nullable();
+        //     $table->timestamps();
+        //     //
+        // });
+
+        // Schema::table('inputs', function(Blueprint $table) {
+        //     //
+        //     $table->integer('development')->nullable();
+        // });
+
+        /*$s = SubcontractorDocument::first();
+        $s->subcontractor_id = 1;
+        $s->save();*/
+
+        /*Schema::dropIfExists('subcontractor_documents');
+        Schema::create('subcontractor_documents', function (Blueprint $table) {
+            $table->id();
+            $table->integer('subcontractor_id')->nullable();
+            $table->integer('type')->nullable();
+            $table->integer('status')->nullable();
+            $table->string('url')->nullable();
+            $table->timestamps();
+        });*/
+
+        Schema::create('benbros_partners', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->nullable();
+            $table->integer('partner_id')->nullable();
+            $table->integer('order')->nullable();
+            $table->timestamps();
+        });
+
+        return phpinfo();
 
         return Activity::all();
 
@@ -360,62 +558,62 @@ class BackendController extends Controller
             "email" => "francisco.ruiz@benbros.es",
             "position" => "DIRECTOR GENERAL",
             "avatar" => "https://e7.pngegg.com/pngimages/134/822/png-clipart-computer-icons-business-man-people-logo.png"
-        ],
-        [
+            ],
+            [   
             "name" => "Belén Amunátegui",
             "email" => "belen.amunategui@benbros.es",
             "position" => "DESARROLLO DE NEGOCIO",
             "avatar" => "https://e7.pngegg.com/pngimages/134/822/png-clipart-computer-icons-business-man-people-logo.png"
-        ],
-        [
+            ],
+            [   
             "name" => "Juan Carlos Chacón",
             "email" => "juancarlos.chacon@benbros.es",
             "position" => "DIRECTOR TÉCNICO",
             "avatar" => "https://e7.pngegg.com/pngimages/134/822/png-clipart-computer-icons-business-man-people-logo.png"
-        ],
-        [
+            ],
+            [   
             "name" => "Alejandro  Martínez",
             "email" => "alejandro.martinez@benbros.es",
             "position" => "FINANCIERO",
             "avatar" => "https://e7.pngegg.com/pngimages/134/822/png-clipart-computer-icons-business-man-people-logo.png"
-        ],
-        [
+            ],
+            [   
             "name" => "Diego Hernández-Gil",
             "email" => "diego.hernandezgil@benbros.es",
             "position" => "LEGAL",
             "avatar" => "https://e7.pngegg.com/pngimages/134/822/png-clipart-computer-icons-business-man-people-logo.png"
-        ],
-        [
+            ],
+            [   
             "name" => "Maite  Moreno Galdos",
             "email" => "Maite.Moreno@benbros.es",
             "position" => "LEGAL",
             "avatar" => "https://e7.pngegg.com/pngimages/134/822/png-clipart-computer-icons-business-man-people-logo.png"
-        ],
-        [
+            ],
+            [   
             "name" => "Fernando  Álvarez",
             "email" => "fernando.alvarez@benbros.es",
             "position" => "TERRENOS",
             "avatar" => "https://e7.pngegg.com/pngimages/134/822/png-clipart-computer-icons-business-man-people-logo.png"
-        ],
-        [
+            ],
+            [   
             "name" => "Arantxa Ferragut",
             "email" => "arantxa.ferragut@benbros.es",
             "position" => "DIRECTORA FINANCIERA",
             "avatar" => "https://e7.pngegg.com/pngimages/134/822/png-clipart-computer-icons-business-man-people-logo.png"
-        ],
-        [
+            ],
+            [   
             "name" => "Ignacio Aguirre",
             "email" => "ignacio.aguirre@benbros.es",
             "position" => "M&A",
             "avatar" => "https://e7.pngegg.com/pngimages/134/822/png-clipart-computer-icons-business-man-people-logo.png"
-        ],
-        [
+            ],
+            [   
             "name" => "Ignacio Guerrero",
             "email" => "ignacio.guerrero@benbros.es",
             "position" => "TERRENOS",
             "avatar" => "https://e7.pngegg.com/pngimages/134/822/png-clipart-computer-icons-business-man-people-logo.png"
-        ],
-        [
+            ],
+            [   
             "name" => "Isabel Ibañez",
             "email" => "isabel.ibanez@benbros.es",
             "position" => "DESARROLLO DE NEGOCIO",
@@ -533,6 +731,7 @@ class BackendController extends Controller
             $fr->info = "";
             $fr->summary = 0;
             $fr->guarantee = 0;
+            $fr->development = 0;
             $fr->save();
         }
 
@@ -706,6 +905,7 @@ class BackendController extends Controller
 
                 $fr = new Input;
                 $fr->section_id = $s->id;
+                $fr->type = 'normal';
                 $fr->table = 'project';
                 $fr->title = $value1;
                 $fr->info = "";
@@ -833,7 +1033,9 @@ class BackendController extends Controller
         $fr->info = $r->info;
         $fr->summary = $r->summary ? 1 : 0;
         $fr->guarantee = $r->guarantee ? 1 : 0;
+        $fr->development = $r->development ? 1 : 0;
         $fr->status = $r->status ? 1 : 0;
+        $fr->order = 9999;
         $fr->save();
 
         /**/
@@ -862,6 +1064,7 @@ class BackendController extends Controller
         $fr->info = $r->info;
         $fr->summary = $r->summary ? 1 : 0;
         $fr->guarantee = $r->guarantee ? 1 : 0;
+        $fr->development = $r->development ? 1 : 0;
         $fr->status = $r->status ? 1 : 0;
         $fr->save();
 
@@ -884,7 +1087,15 @@ class BackendController extends Controller
         $l = new Land;
         $l->save();
 
-        return view('includes.lands')->render();
+        $l->carpeta = $l->id;
+        $l->save();
+
+        session()->forget('filters');
+        session()->forget('extras');
+
+        $lands = Land::orderBy('id','desc')->whereNotNull('carpeta')->paginate(10);
+
+        return [view('includes.lands',compact('lands'))->render(),view('includes.lands-links',['links' => $lands->links()])->render()];
     }
 
     public function saveLand(Request $r)
@@ -892,6 +1103,7 @@ class BackendController extends Controller
         $l = Land::find($r->id);
         $l->partner_id = $r->partner_id != 'null' ? $r->partner_id : $l->partner_id;
         $l->month = $r->month ? $r->month : $l->month;
+        $l->main = $r->main ? 1 : null;
         $l->week = $r->week ? $r->week : $l->week;
         $l->name = $r->name ? $r->name : $l->name;
         $l->analisys_state = $r->analisys_state != 'null' ? $r->analisys_state : $l->analisys_state;
@@ -904,7 +1116,7 @@ class BackendController extends Controller
         $l->substation = $r->substation ? $r->substation : $l->substation;
         $l->substation_km = $r->substation_km ? $r->substation_km : $l->substation_km;
         
-        if ($l->extra_inputs) {
+        if ($l->extra_inputs && $l->extra_inputs != "[]") {
             
             $extras = json_decode($l->extra_inputs,true);
             $editables = [];
@@ -930,7 +1142,8 @@ class BackendController extends Controller
         $l->technology = $r->technology != 'null' ? $r->technology : $l->technology;
         $l->save();
 
-        if ($l->analisys_state == 1 && $l->contract_state == 2) {
+        if (($l->analisys_state == 1 || $l->analisys_state == 3 || $l->analisys_state == 7 || $l->analisys_state == 10)
+            && ($l->contract_state == 6 || $l->contract_state == 8)) {
 
             $p = Permission::where('land_id',$l->id)->first();
 
@@ -942,6 +1155,13 @@ class BackendController extends Controller
                 $this->generateActivities($p->id);
             }
         }
+    }
+
+    public function truncateGuarantees()
+    {
+        Endorsement::truncate();
+
+        return back();
     }
 
     public function addStatus()
@@ -977,8 +1197,10 @@ class BackendController extends Controller
     public function deleteInput($id)
     {
         $l = Input::find($id);
-        foreach ($l->options as $key => $value) {
-            $value->delete();
+        if ($l->options) {
+            foreach ($l->options as $key => $value) {
+                $value->delete();
+            }
         }
         $l->delete();
 
@@ -1007,6 +1229,33 @@ class BackendController extends Controller
         $p->save();
     }
 
+
+    /**/
+
+    public function addBenbrosPartner()
+    {
+        $p = new BenbrosPartner;
+        $p->save();
+
+        return view('includes.benbros-partners')->render();
+    }
+    public function deleteBenbrosPartner($id)
+    {
+        $p = BenbrosPartner::find($id);
+        $p->delete();
+
+        return back();
+    }
+
+    public function saveBenbrosPartner(Request $r)
+    {
+        $p = BenbrosPartner::find($r->id);
+        $p->name = $r->name;
+        $p->save();
+    }
+
+    /**/
+
     public function saveDocument(Request $r)
     {
         if ($r->hasFile('document')) {
@@ -1018,11 +1267,29 @@ class BackendController extends Controller
             $d->document = $name;
             $d->name = $r->name;
             $d->type = $r->type;
-            $d->order = 0;
+            $d->order = 9999;
             $d->save();
 
             return view('includes.documents',['type' => $r->type])->render();
         }
+    }
+
+    public function getKML($id)
+    {
+        $l = Land::find($id);
+
+        $files = [];
+
+        foreach(json_decode($l->extra_inputs,true) as $key => $value)
+        {
+            if ($value['id'] == 161) {
+
+                $files = explode(',', $value['value']);
+            }
+        }
+
+        return $files;
+
     }
 
     public function prepareKML($id)
@@ -1063,15 +1330,31 @@ class BackendController extends Controller
                         "verify_peer"=>false,
                         "verify_peer_name"=>false,
                     ],
+                    "http" => [
+                        "header" => "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36"
+                    ]
                 ];  
 
                 if ($z->open(public_path().'/'.$n, ZipArchive::CREATE) === TRUE) {
                     foreach ($files as $key => $value1) {
                         if ($value1 != '') {
 
+                            function curl_get_contents($url)
+                            {
+                                $ch = curl_init();
+                                curl_setopt($ch, CURLOPT_URL, $url);
+                                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                                curl_setopt($ch,CURLOPT_USERAGENT,'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.13) Gecko/20080311 Firefox/2.0.0.13');
+                                $html = curl_exec($ch);
+                                $data = curl_exec($ch);
+                                curl_close($ch);
+                                return $data;
+                            }
+
 
                             // $content = file_get_contents("http://ovc.catastro.meh.es/Cartografia/WMS/BuscarParcelaGoogle.aspx?RefCat=".$value1);
-                            $content = file_get_contents("https://ovc.catastro.meh.es/Cartografia/WMS/BuscarParcelaGoogle3D.aspx?refcat=$value1&tipo=3d",false,stream_context_create($arrContextOptions));
+                            // $content = file_get_contents(, false , stream_context_create($arrContextOptions));
+                            $content = curl_get_contents("https://ovc.catastro.meh.es/Cartografia/WMS/BuscarParcelaGoogle3D.aspx?refcat=".$value1."&tipo=3d");
                             // https://ovc.catastro.meh.es/Cartografia/WMS/BuscarParcelaGoogle3D.aspx?refcat=&tipo=3d
                             // $content = file_get_contents("https://www1.sedecatastro.gob.es/Cartografia/FXCC/FXCC_KML.aspx?refcat=".$value1,false, stream_context_create($arrContextOptions));
 
@@ -1249,6 +1532,7 @@ class BackendController extends Controller
         $c = Contact::find($r->id);
         $c->name = $r->name;
         $c->last_name = $r->last_name;
+        $c->company = $r->company;
         $c->email = $r->email;
         $c->phone = $r->phone;
         $c->address = $r->address;
@@ -1303,6 +1587,33 @@ class BackendController extends Controller
     public function deleteAdministrativeDocument($id)
     {
         $a = AdministrationDocument::find($id);
+        $a->delete();
+
+        return back();
+    }
+
+    public function saveInputDocument(Request $r)
+    {
+        if ($r->hasFile('document')) {
+            $file = $r->file('document');
+            $name = uniqid().'_'.$file->getClientOriginalName();
+            $file->move(public_path().'/uploads/documents/miscelaneous/',$name);
+
+            $d = new InputDocument;
+            $d->input_id = $r->input_id;
+            $d->permission_id = $r->id;
+            $d->url = $name;
+            $d->save();
+
+            $a = Administration::find($r->id);
+
+            return false;
+        }
+    }
+
+    public function deleteInputDocument($id)
+    {
+        $a = InputDocument::find($id);
         $a->delete();
 
         return back();
@@ -1400,7 +1711,7 @@ class BackendController extends Controller
 
     public function deleteOtherInformation($id)
     {
-        $d = MaDocument::find($id);
+        $d = OtherInformation::find($id);
         $d->delete();
 
         return back();
@@ -1625,6 +1936,261 @@ class BackendController extends Controller
         }
 
         return $t->name_en;
+    }
+
+    public function changeInputOrder(Request $r)
+    {
+        if ($r->inputs) {
+            $a = count($r->inputs);
+            foreach (array_reverse($r->inputs) as $key => $value) {
+                $inp = Input::find($value);
+                $inp->order = $a;
+                $inp->save();
+                $a--;
+            }
+        }
+    }
+
+    public function truncateAll()
+    {
+        Endorsement::truncate();
+        Land::truncate();
+        Permission::truncate();
+        Activity::truncate();
+        ActivitySection::truncate();
+        ActivityDocument::truncate();
+        InputDocument::truncate();
+
+        return back();
+    }
+
+    public function loadPagination(Request $r)
+    {
+        $lands = Land::orderBy('id','desc')->whereNotNull('carpeta')->where(function($q){
+            if (session('filters')) {
+                foreach (session('filters') as $key => $value) {
+                    if ($value) {
+                        
+                        if ($key == 'request_status') {
+
+                            $q->whereExists(function($q) use($value){
+                                $q->from('endorsements')
+                                  ->whereRaw('endorsements.land_id = lands.id')
+                                  ->whereExists(function($qq) use($value){
+                                    $qq->from('statuses')
+                                       ->whereRaw('endorsements.request_status = statuses.id')
+                                       ->whereRaw('statuses.name like "%'.$value.'%"');
+                                  });
+                            });
+                            
+                        } else if ($key == 'guarantee_status') {
+
+                            $q->whereExists(function($q) use($value){
+                                $q->from('endorsements')
+                                  ->whereRaw('endorsements.land_id = lands.id')
+                                  ->whereExists(function($qq) use($value){
+                                    $qq->from('statuses')
+                                       ->whereRaw('endorsements.guarantee_status = statuses.id')
+                                       ->whereRaw('statuses.name like "%'.$value.'%"');
+                                  });
+                            });
+                            
+                        } else if ($key == 'analisys_state') {
+
+                            $ids = [];
+                            
+                            if (stripos('Aceptada Ficticio', $value) !== false) {$ids[] = 1;}
+                            if (stripos('En Estudio', $value) !== false) {$ids[] = 2;}
+                            if (stripos('Aceptada', $value) !== false) {$ids[] = 3;}
+                            if (stripos('Descartada', $value) !== false) {$ids[] = 4;}
+                            if (stripos('Para Aclarar', $value) !== false) {$ids[] = 5;}
+                            if (stripos('Para Posicionamiento', $value) !== false) {$ids[] = 6;}
+                            if (stripos('Aceptada Ficticio 5', $value) !== false) {$ids[] = 7;}
+                            if (stripos('Tramitación', $value) !== false) {$ids[] = 8;}
+                            if (stripos('Posicionar con mas Terrenos', $value) !== false) {$ids[] = 9;}
+                            if (stripos('Aceptada 5 MW Real', $value) !== false) {$ids[] = 10;}
+                            if (stripos('Prioridad concurso/distribución', $value) !== false) {$ids[] = 11;}
+                            if (stripos('Pendiente de Oferta', $value) !== false) {$ids[] = 12;}
+                            if (stripos('Sin Terreno', $value) !== false) {$ids[] = 13;}
+
+                            $q->whereIn('analisys_state',$ids);
+
+                        } else if ($key == 'contract_state') {
+
+                            $ids = [];
+
+                            if (stripos('Sin identificar',$value) !== false) {$ids[] = 1;}
+                            if (stripos('PTE Contrato Propiedad',$value) !== false) {$ids[] = 2;}
+                            if (stripos('Negociación',$value) !== false) {$ids[] = 3;}
+                            if (stripos('Negoc. Avanzada',$value) !== false) {$ids[] = 4;}
+                            if (stripos('Sin Acuerdo',$value) !== false) {$ids[] = 5;}
+                            if (stripos('Firmado',$value) !== false) {$ids[] = 6;}
+                            if (stripos('No Posible',$value) !== false) {$ids[] = 7;}
+                            if (stripos('Firmado Solar',$value) !== false) {$ids[] = 8;}
+
+                            $q->whereIn('contract_state',$ids);
+                            
+                        } else if ($key == 'technology') {
+                            $q->whereExists(function($q) use($value){
+                                $q->from('technologies')
+                                  ->whereRaw('technologies.name like "%'.$value.'%"')
+                                  ->whereRaw('technologies.id = lands.technology');
+                            });
+                            
+                        } else if ($key == 'partner_id') {
+                            $q->whereExists(function($q) use($value){
+                                $q->from('partners')
+                                  ->whereRaw('partners.name like "%'.$value.'%"')
+                                  ->whereRaw('partners.id = lands.partner_id');
+                            });
+                            
+                        } else{
+                            $q->where($key,'like','%'.$value.'%');
+                        }
+                    }
+                }
+            }
+            if (session('extras')) {
+                foreach (session('extras') as $key => $value) {
+                    if ($value) {
+                        \Log::info([$key,$value]);
+                        $q/*->where('extra_inputs','like','%'.$value.'%');*/->where(function($qq) use($key,$value){
+                            $qq->where('extra_inputs','like','%:'.$key.',%')
+                               ->where('extra_inputs','like','%"'.$this->repStr($value).'%');
+                        });
+                    }
+                }
+            }
+
+        })->paginate(10);
+
+        return [view('includes.lands',compact('lands'))->render(),view('includes.lands-links',['links' => $lands->links()])->render()];
+    }
+
+    public function saveSessionFilters(Request $r)
+    {
+        if ($r->type == 'normal') {
+            session()->put('filters.'.$r->name, $r->value);
+        }
+        else{
+            session()->put('extras.'.$r->name, $r->value);
+        }
+
+        $lands = Land::orderBy('id','desc')->whereNotNull('carpeta')->where(function($q){
+            if (session('filters')) {
+                foreach (session('filters') as $key => $value) {
+                    if ($value) {
+                        
+                        if ($key == 'request_status') {
+
+                            $q->whereExists(function($q) use($value){
+                                $q->from('endorsements')
+                                  ->whereRaw('endorsements.land_id = lands.id')
+                                  ->whereExists(function($qq) use($value){
+                                    $qq->from('statuses')
+                                       ->whereRaw('endorsements.request_status = statuses.id')
+                                       ->whereRaw('statuses.name like "%'.$value.'%"');
+                                  });
+                            });
+                            
+                        } else if ($key == 'guarantee_status') {
+
+                            $q->whereExists(function($q) use($value){
+                                $q->from('endorsements')
+                                  ->whereRaw('endorsements.land_id = lands.id')
+                                  ->whereExists(function($qq) use($value){
+                                    $qq->from('statuses')
+                                       ->whereRaw('endorsements.guarantee_status = statuses.id')
+                                       ->whereRaw('statuses.name like "%'.$value.'%"');
+                                  });
+                            });
+                            
+                        } else if ($key == 'analisys_state') {
+
+                            $ids = [];
+                            
+                            if (stripos('Aceptada Ficticio', $value) !== false) {$ids[] = 1;}
+                            if (stripos('En Estudio', $value) !== false) {$ids[] = 2;}
+                            if (stripos('Aceptada', $value) !== false) {$ids[] = 3;}
+                            if (stripos('Descartada', $value) !== false) {$ids[] = 4;}
+                            if (stripos('Para Aclarar', $value) !== false) {$ids[] = 5;}
+                            if (stripos('Para Posicionamiento', $value) !== false) {$ids[] = 6;}
+                            if (stripos('Aceptada Ficticio 5', $value) !== false) {$ids[] = 7;}
+                            if (stripos('Tramitación', $value) !== false) {$ids[] = 8;}
+                            if (stripos('Posicionar con mas Terrenos', $value) !== false) {$ids[] = 9;}
+                            if (stripos('Aceptada 5 MW Real', $value) !== false) {$ids[] = 10;}
+                            if (stripos('Prioridad concurso/distribución', $value) !== false) {$ids[] = 11;}
+                            if (stripos('Pendiente de Oferta', $value) !== false) {$ids[] = 12;}
+                            if (stripos('Sin Terreno', $value) !== false) {$ids[] = 13;}
+
+                            $q->whereIn('analisys_state',$ids);
+
+                        } else if ($key == 'contract_state') {
+
+                            $ids = [];
+
+                            if (stripos('Sin identificar',$value) !== false) {$ids[] = 1;}
+                            if (stripos('PTE Contrato Propiedad',$value) !== false) {$ids[] = 2;}
+                            if (stripos('Negociación',$value) !== false) {$ids[] = 3;}
+                            if (stripos('Negoc. Avanzada',$value) !== false) {$ids[] = 4;}
+                            if (stripos('Sin Acuerdo',$value) !== false) {$ids[] = 5;}
+                            if (stripos('Firmado',$value) !== false) {$ids[] = 6;}
+                            if (stripos('No Posible',$value) !== false) {$ids[] = 7;}
+                            if (stripos('Firmado Solar',$value) !== false) {$ids[] = 8;}
+
+                            $q->whereIn('contract_state',$ids);
+                            
+                        } else if ($key == 'technology') {
+                            $q->whereExists(function($q) use($value){
+                                $q->from('technologies')
+                                  ->whereRaw('technologies.name like "%'.$value.'%"')
+                                  ->whereRaw('technologies.id = lands.technology');
+                            });
+                            
+                        } else if ($key == 'partner_id') {
+                            $q->whereExists(function($q) use($value){
+                                $q->from('partners')
+                                  ->whereRaw('partners.name like "%'.$value.'%"')
+                                  ->whereRaw('partners.id = lands.partner_id');
+                            });
+                            
+                        } else{
+                            $q->where($key,'like','%'.$value.'%');
+                        }
+                    }
+                }
+            }
+            if (session('extras')) {
+                foreach (session('extras') as $key => $value) {
+                    if ($value) {
+                        \Log::info([$key,$value]);
+                        $q/*->where('extra_inputs','like','%'.$value.'%');*/->where(function($qq) use($key,$value){
+                            $qq->where('extra_inputs','like','%:'.$key.',%')
+                               ->where('extra_inputs','like','%"'.$this->repStr($value).'%');
+                        });
+                    }
+                }
+            }
+
+        })->paginate(10);
+
+        return [view('includes.lands',compact('lands'))->render(),view('includes.lands-links',['links' => $lands->links()])->render()];
+    }
+
+    public function repStr($str)
+    {
+        return strtolower(trim(strtr(utf8_decode($str), utf8_decode('àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ/'), 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY-')));
+    }
+
+    public function changeMainProjectsProperty()
+    {
+        if (session()->has('mainProjects')) {
+            session()->forget('mainProjects');
+        }else{
+            session(['mainProjects' => 1]);
+        }
+
+        return back();
     }
 
 }

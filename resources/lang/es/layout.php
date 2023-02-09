@@ -4,6 +4,7 @@ return [
 	'home' => 'Escritorio',
 
 	'mw_accecpted' => 'MW aceptados',
+	'mw_awarded' => 'MW adjudicados',
 	'mw_pending' => 'MW pendientes',
 	'mw_rejected' => 'MW rechazados',
 	'budget' => 'Presupuesto',

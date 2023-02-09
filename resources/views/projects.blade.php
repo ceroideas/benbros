@@ -35,13 +35,14 @@
               <!-- /.card-header -->
               @php
                 $sections = App\Models\Section::orderBy('id','asc')->get();
+                $inputs = App\Models\Input::where('table','land')->where('development',1)->orderBy('order','asc')->get();
               @endphp
               <div class="card-body">
                 <div class="table-responsive">
                   <table id="example2" class="table table-bordered table-striped table-hover" style="width: 100%;">
                     <thead>
                       <tr>
-                        <th colspan="4">
+                        <th colspan="{{$inputs->count()+3}}">
                           
                         </th>
                         @foreach ($sections as $key => $sect)
@@ -55,10 +56,15 @@
                       </tr>
                     {{-- </thead>
                     <thead> --}}
-                    <tr>
+                    <tr class="filters">
                       <th style="min-width: 150px;">{{trans('projects.project')}}</th>
                       <th>{{trans('projects.tech')}}</th>
-                      <th>{{trans('projects.processing_type')}}</th>
+                      {{-- <th>{{trans('projects.processing_type')}}</th> --}}
+
+                      @foreach ($inputs as $inp)
+                        <th>{{$inp->title}}</th>
+                      @endforeach
+
                       <th>{{trans('projects.financial_model')}}</th>
                       <th>{{trans('projects.prev_proposal')}}</th>
                       @foreach ($sections as $sect)
@@ -66,7 +72,7 @@
                           <th>{{$inp->title}}</th>
                         @endforeach
                       @endforeach
-                      <th>{{trans('projects.options')}}</th>
+                      <th class="no-filter">{{trans('projects.options')}}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -76,7 +82,12 @@
                     <tr>
                       <th>{{trans('projects.project')}}</th>
                       <th>{{trans('projects.tech')}}</th>
-                      <th>{{trans('projects.processing_type')}}</th>
+                      {{-- <th>{{trans('projects.processing_type')}}</th> --}}
+
+                      @foreach ($inputs as $inp)
+                        <th>{{$inp->title}} hola</th>
+                      @endforeach
+
                       <th>{{trans('projects.financial_model')}}</th>
                       <th>{{trans('projects.prev_proposal')}}</th>
                       @foreach ($sections as $sect)
@@ -94,7 +105,7 @@
 
                 <button class="btn btn-primary" data-toggle="modal" data-target="#builder-2">{{trans('projects.add_new_proj')}}</button>
                 <button class="btn btn-success" data-toggle="modal" data-target="#builder-1" style="margin-left: 4px;">{{trans('projects.add_new_column')}}</button>
-                <button class="btn btn-danger" style="margin-left: 4px;">{{trans('projects.delete_column')}}</button>
+                <button class="btn btn-danger" data-toggle="modal" data-target="#builder-3" style="margin-left: 4px;">{{trans('lands.delete_column')}}</button>
 
               </div>
               <!-- /.card-body -->
@@ -132,15 +143,95 @@
 
     $('#example2').DataTable({
       "scrollX": true,
+      "ordering": false,
+      "sorting": false,
       "fixedColumns": {
         left: 3
       },
+      orderCellsTop: true,
+        fixedHeader: true,
+        initComplete: function () {
+            var api = this.api();
+ 
+            // For each column
+            api
+                .columns()
+                .eq(0)
+                .each(function (colIdx) {
+                    // Set the header cell to contain the input element
+                    var cell = $('.filters th').eq(
+                        $(api.column(colIdx).header()).index()
+                    );
+                    var title = $(cell).text();
+                    if ($(cell).hasClass('no-filter')) {
+                      $(cell).addClass('sorting_disabled').html(title);
+                    }else{
+                      $(cell).addClass('sorting_disabled').html(`<label style="font-size: 12px;">${title}</label> <br> <input type="text" class="inline-fields" />`);
+                    }
+ 
+                    // On every keypress in this input
+                    $(
+                        'input',
+                        $('.filters th').eq($(api.column(colIdx).header()).index())
+                    )
+                        .off('keyup change')
+                        .on('keyup change', function (e) {
+                            e.stopPropagation();
+ 
+                            // Get the search value
+                            $(this).attr('title', $(this).val());
+                            var regexr = '({search})'; //$(this).parents('th').find('select').val();
+ 
+                            var cursorPosition = this.selectionStart;
+                            // Search the column for that value
+
+                            // console.log(val.replace(/<select[\s\S]*?<\/select>/,''));
+                            let wSelect = false;
+                            $.each(api.column(colIdx).data(), function(index, val) {
+                               if (val.indexOf('<select') == -1) {
+                                wSelect = false;
+                               }else{
+                                wSelect = true;
+                               }
+                            });
+
+                            // $.each(api
+                            //     .column(colIdx).data(), function(index, val) {
+                            //     console.log(val)
+                            // });
+
+                            api
+                                .column(colIdx)
+                                .search(
+
+                                  (wSelect ?
+                                      (this.value != ''
+                                        ? regexr.replace('{search}', '(((selected' + this.value + ')))')
+                                        : '')
+                                    :
+                                      (this.value != ''
+                                        ? regexr.replace('{search}', '(((' + this.value + ')))')
+                                        : '')),
+
+                                    this.value != '',
+                                    this.value == ''
+                                ).draw()
+ 
+                            $(this)
+                                .focus()[0]
+                                .setSelectionRange(cursorPosition, cursorPosition);
+                        });
+                });
+        }
     });
   });
 
+  setTimeout(()=>{
+    $('.filters .inline-fields:first').trigger('keyup');
+  },100);
+
   function saveRow(id)
   {
-    console.log('hola')
     var formData = new FormData();
     var extra = [];
 
@@ -239,8 +330,45 @@
     .always(function() {
       console.log("complete");
     });
-    
-    console.log(id,action,img);
+  }
+
+  function uploadFile2(t)
+  {
+    let input_id = $(t).data('input_id');
+    let id = $(t).data('id');
+    let action = $(t).data('action');
+
+    console.log($(t),input_id,id,action);
+
+    let file = $('#file-'+id+'-'+input_id)[0].files;
+
+    if (file.length == 0) {
+      return false;
+    }
+
+    let formData = new FormData();
+    formData.append('id',id);
+    formData.append('input_id',input_id);
+    formData.append('_token','{{csrf_token()}}');
+    formData.append('document',file[0]);
+
+    $.ajax({
+      url: action,
+      type: 'POST',
+      contentType: false,
+      processData: false,
+      data: formData,
+    })
+    .done(function(data) {
+      console.log("success");
+      location.reload();
+    })
+    .fail(function() {
+      console.log("error");
+    })
+    .always(function() {
+      console.log("complete");
+    });
   }
 </script>
 @endsection

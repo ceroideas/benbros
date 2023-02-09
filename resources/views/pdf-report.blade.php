@@ -77,11 +77,11 @@
         <!-- Define header and footer blocks before your content -->
         <header>
             <div class="left-title">
-                <h1>Project Name:</h1>
+                <h1>{{trans('lands.project_name')}}:</h1>
 
                 <small>{{$l->name}}</small>
             </div>
-            <img src="./1.png" alt="" style="float: right; position: absolute; top: 20px; right: 80px; width: 300px">
+            <img src="./1.png" alt="" style="float: right; position: absolute; top: 20px; right: 80px; width: 300px" />
         </header>
         
         {{-- <footer>
@@ -91,106 +91,115 @@
         <!-- Wrap the content of your PDF inside a main tag -->
         <main>
 
-            <br>
-            <br>
+            <br/>
+            <br/>
 
             @if (in_array('1', $r['fields-report']))
             
             <label class="section-title">
-                General Information
+                {{trans('lands.general_info')}}
             </label>
-            <br>
+            <br/>
 
-            <div>
-                @if($r->pn)<b>Project Name:</b> {{$l->name}}<br> @endif
-                @if($r->mt)<b>Month:</b> {{$l->month}}<br> @endif
-                @if($r->wk)<b>Week:</b> {{$l->week}}<br> @endif
-                @if($r->pt)<b>Partner:</b> {{ $l->partner ? $l->partner->name : ''}} <br> @endif
-                @if($r->as)<b>Analisys State:</b>
+            <div style="padding: 12px; background-color: #f1f1f1;">
+                @if($r->pn)<b>{{trans('lands.project_name')}}:</b> {{$l->name}}<br/> @endif
+                {{-- @if($r->mt)<b>{{trans('lands.month')}}:</b> {{$l->month}}<br/> @endif
+                @if($r->wk)<b>{{trans('lands.week')}}:</b> {{$l->week}}<br/> @endif --}}
+                @if($r->pt)<b>{{trans('lands.partner')}}:</b> {{ $l->partner ? $l->partner->name : ''}} <br/> @endif
+                @if($r->as)<b>{{trans('lands.analysis_state')}}:</b>
                 @switch($l->analisys_state)
-                    @case(1) Accepted @break
-                    @case(2) Rejected @break
-                    @case(3) Under Study @break
-                    @case(4) To Clarify @break
-                    @case(5) For Positioning @break
-                    @case(6) Accepted as Fictition @break
+                  @case(1) Aceptada Ficticio @break
+                  @case(2) En Estudio @break
+                  @case(3) Aceptada @break
+                  @case(4) Descartada @break
+                  @case(5) Para Aclarar @break
+                  @case(6) Para Posicionamiento @break
+                  @case(7) Aceptada Ficticio 5 @break
+                  @case(8) Tramitación @break
+                  @case(9) Posicionar con mas Terrenos @break
+                  @case(10) Aceptada 5 MW Real@break
+                  @case(11) Prioridad concurso/distribución @break
+                  @case(12) Pendiente de Oferta @break
+                  @case(13) Sin Terreno @break
                 @endswitch
-                <br> @endif
+                <br/> @endif
             </div>
 
-            <br>
+            <br/>
 
             @endif
 
             @if (in_array('2', $r['fields-report']))
 
                 <label class="section-title">
-                    Contract Information
+                    {{trans('lands.contract_info')}}
                 </label>
 
-                <div>
-                    @if($r->cs) <b>Contract State:</b> 
+                <div style="padding: 12px; background-color: #f1f1f1;">
+                    @if($r->cs) <b>{{trans('lands.contract_state')}}:</b> 
                     @switch($l->contract_state)
-                        @case(1) No Deal @break
-                        @case(2) Signed @break
-                        @case(3) In Negotia tion @break
-                        @case(4) Advanced Negation @break
-                        @case(5) Not Started @break
+                      @case(1) Sin identificar @break
+                      @case(2) PTE Contrato Propiedad @break
+                      @case(3) Negociación @break
+                      @case(4) Negoc. Avanzada @break
+                      @case(5) Sin Acuerdo @break
+                      @case(6) Firmado @break
+                      @case(7) No Posible @break
+                      @case(8) Firmado Solar @break
                     @endswitch
-                    <br> @endif
-                    @if($r->cn) <b>Contract Negotiaton:</b> {{$l->negotiator}}<br> @endif
-                    @if($r->pi) <b>Partner Info:</b> {{$l->partner_info}}<br> @endif
+                    <br/> @endif
+                    @if($r->cn) <b>{{trans('lands.contract_negotiator')}}:</b> {{$l->negotiator}}<br/> @endif
+                    @if($r->pi) <b>{{trans('lands.partner_info')}}:</b> {{$l->partner_info}}<br/> @endif
                 </div>
-                <br>
+                <br/>
 
             @endif
 
             @if (in_array('3', $r['fields-report']))
 
                 <label class="section-title">
-                    General Technical Conditions
+                    {{trans('lands.general_tech_conditions')}}
                 </label>
-                <br>
+                <br/>
 
-                <div>
-                    @if($r->tp) <b>Total Peak Power:</b> {{$l->mwp}}MW<br> @endif
-                    @if($r->tr) <b>Total Power Rating:</b> {{$l->mwn}}MW<br> @endif
-                    @if($r->ss) <b>Substation:</b> {{$l->substation}}<br> @endif
-                    @if($r->ks) <b>KM Substation:</b> {{$l->substation_km}}<br> @endif
-                    @if($r->tg) <b>Technology:</b> 
-                    @switch($l->technology)
-                        @case(1) FV @break
-                        @case(2) Green Hydrogen @break
-                        @case(3) Storage @break
-                        @case(4) Hybrid @break
-                    @endswitch
-                    <br> @endif
+                <div style="padding: 12px; background-color: #f1f1f1;">
+                    @if($r->tp) <li><b>Total {{trans('lands.mwp')}}:</b> {{$l->mwp}}MW </li> @endif
+                    @if($r->tr) <li><b>Total {{trans('lands.mwn')}}:</b> {{$l->mwn}}MW </li> @endif
+                    @if($r->ss) <li><b>{{trans('lands.set')}}:</b> {{$l->substation}} </li> @endif
+                    @if($r->ks) <li><b>{{trans('lands.km_set')}}:</b> {{$l->substation_km}} </li> @endif
+                    @if($r->tg) <li><b>{{trans('lands.technology')}}:</b>
+                    @php
+                        $t = App\Models\Technology::find($l->technology);
+                    @endphp
+
+                    {{$t ? $t->name : '--'}}
+                    </li> @endif
                 </div>
 
-                <br>
+                <br/>
 
             @endif
 
             @if (in_array('4', $r['fields-report']))
 
                 <label class="section-title">
-                    Aditional Information
+                    {{trans('lands.aditional_info')}}
                 </label>
-                <br>
+                <br/>
 
                 @php
                     $inputs = App\Models\Input::where('table','land')->orderBy('order','asc')->get();
                 @endphp
 
-                <div>
+                <div style="padding: 12px; background-color: #f1f1f1;">
                     @foreach ($inputs as $inp)
                         @if ($r['i'.$inp->id])
-                            <b>{{$inp->title}}:</b> {{$l->checkField($inp->id)}} <br>
+                            <li><b>{{$inp->title}}:</b> {{$l->checkField($inp->id)}} </li>
                         @endif
                     @endforeach
                 </div>
 
-                <br>
+                <br/>
 
             @endif
 
@@ -202,19 +211,19 @@
 
                 @if ($aval)
                     <label class="section-title">
-                        Guarantee
+                        {{trans('lands.guarantee')}}
                     </label>
-                    <br>
+                    <br/>
                     
-                    <div>
+                    <div style="padding: 12px; background-color: #f1f1f1;">
 
-                        @if($r->gs) <b>Guarantee Status:</b> {{ $aval->guarantee_status ? App\Models\Status::find($aval->guarantee_status)->name : '' }} <br> @endif
-                        @if($r->rs) <b>Request Status:</b> {{ $aval->request_status ? App\Models\Status::find($aval->request_status)->name : '' }}<br> @endif
-                        @if($r->mw) <b>MWn: </b> {{ $aval->land->mwn }} @endif
-                        @if($r->am) <b>Amount €: </b> {{ $aval->ammount }} @endif
+                        @if($r->gs) <li><b>{{trans('guarantee.guarantee_status')}}:</b> {{ $aval->guarantee_status ? App\Models\Status::find($aval->guarantee_status)->name : '' }} </li> @endif
+                        @if($r->rs) <li><b>{{trans('guarantee.request_status')}}:</b> {{ $aval->request_status ? App\Models\Status::find($aval->request_status)->name : '' }} </li> @endif
+                        @if($r->mw) <li><b>{{trans('guarantee.mwn')}}: </b> {{ $aval->land->mwn }} </li> @endif
+                        @if($r->am) <li><b>{{trans('guarantee.amount')}}: </b> {{ $aval->ammount }} </li> @endif
                     </div>
 
-                    <br>
+                    <br/>
                 @endif
 
             @endif
@@ -227,39 +236,75 @@
 
                 @if ($p)
                     <label class="section-title">
-                        Project Information
+                        {{trans('lands.project_info')}}
                     </label>
-                    <br>
+                    <br/>
 
                     @php
                         $sections = App\Models\Section::orderBy('id','asc')->get();
                     @endphp
                     
+                    <div style="padding: 12px; background-color: #f1f1f1;">
                     @foreach ($sections as $sect)
                         @if ($sect->inputs)
                         <div style="margin-bottom: 12px">
                             @if ($r['s'.$sect->id])
-                                <b style="text-decoration: underline">{{$sect->name}}</b> <br>
+                                <div style="display: block; width: 100%; background-color: lightblue; border-bottom: 2px solid #000;">
+                                    <b style="text-decoration: underline">{{$sect->name}}</b>
+                                </div>
                                 @foreach ($sect->inputs as $inp)
-                                <b>{{$inp->title}}</b>: {{$p->checkField($inp->id)}} <br>
+                                    <li><b>{{$inp->title}}</b>:
+                                    @switch($p->checkField($inp->id))
+                                        @case('Si')
+                                            {{App::getLocale() == 'es' ? 'Si' : 'Yes'}}
+                                            @break
+
+                                        @case('No')
+                                            {{App::getLocale() == 'es' ? 'No' : 'No'}}
+                                            @break
+
+                                        @case('En progreso')
+                                            {{App::getLocale() == 'es' ? 'En progreso' : 'In progress'}}
+                                            @break
+                                    
+                                        @default
+                                            {{$p->checkField($inp->id)}}
+                                            @break
+                                    @endswitch
+                                    </li>
+
+                                    @php
+                                        $a = App\Models\Activity::where('name',$inp->title)->whereExists(function($q) use($p){
+                                            $q->from('activity_sections')
+                                            ->whereRaw('activity_sections.id = activities.activity_section_id')
+                                            ->whereRaw('activity_sections.permission_id = '.$p->id);
+                                        })->first();
+                                    @endphp
+                                    @if ($a)
+                                        <i style="padding-left: 40px">{{trans('projects.comments')}}</i>:
+                                        {{ $a && $a->commentary != "" ? $a->commentary : '--' }} <br/>
+                                    @endif
                                 @endforeach
                             @endif
                         </div>
                         @endif
                     @endforeach
+                    </div> 
                     
                 @endif
 
             @endif
 
-            <br>
+            <br/>
 
             @if ($r->information)
 
+            <div class="page_break"></div>
+
             <label class="section-title">
-                Observations / Aditional Information
+                {{trans('lands.obs_aditional_info')}}
             </label>
-            <br>
+            <br/>
 
             <p>
                 {{$r->information}}
@@ -277,15 +322,15 @@
     
                 <span style="display: inline-block; background-color: lightgreen; width: 20px; height: 20px; border-radius: 2px;"></span>
 
-                <span style="display: inline-block; position: relative; top: 2px;">Completado</span> <br>
+                <span style="display: inline-block; position: relative; top: 2px;">Completado</span> <br/>
 
                 <span style="display: inline-block; background-color: crimson; width: 20px; height: 20px; border-radius: 2px;"></span>
 
-                <span style="display: inline-block; position: relative; top: 2px;">Incompleto</span> <br>
+                <span style="display: inline-block; position: relative; top: 2px;">Incompleto</span> <br/>
 
             </div>
 
-            <img src="{{$r->dataUrl}}" alt="" style="width: 130%; height: 580px; border: none !important; transform: rotate(-90deg); margin-top: 180px; margin-left: -100px;">
+            <img src="{{$r->dataUrl}}" alt="" style="width: 130%; height: 580px; border: none !important; transform: rotate(-90deg); margin-top: 180px; margin-left: -100px;" />
             @endif
 
         </main>

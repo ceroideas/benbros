@@ -15,7 +15,7 @@ class LangMiddleware
      */
     public function handle($request, Closure $next)
     {
-        $langArr = ['it','fr'];
+        $langArr = ['en','es'];
         if (!session('lang')) {
             if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
                 $languages = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
@@ -23,7 +23,7 @@ class LangMiddleware
                     session(['lang' => $languages[0]]);
                     \App::setLocale(session('lang'));
                 }else{
-                    session(['lang' => 'it']);
+                    session(['lang' => 'es']);
                     \App::setLocale(session('lang'));
                 }
             }

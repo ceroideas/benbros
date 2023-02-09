@@ -1,3 +1,8 @@
+@php
+  function stripAccents($str) {
+      return strtolower(trim(strtr(utf8_decode($str), utf8_decode('àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ/'), 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY-')));
+  }
+@endphp
 @foreach (App\Models\Endorsement::all() as $aval)
   <tr class="table-row" data-id="{{$aval->id}}">
     <td><input onchange="saveRow('{{$aval->id}}')" class="inline-fields main-fields" name="type" value="{{$aval->type}}" type="text"></td>
@@ -28,7 +33,7 @@
            <select onchange="saveRow('{{$aval->id}}')" class="inline-fields extra-fields" name="{{$inp->id}}">
             <option value="" selected disabled></option>
             @foreach ($inp->options as $op)
-              <option {{$aval->land->checkField($inp->id) == $op->option ? 'selected' : ''}}>{{$op->option}}</option>
+              <option {{stripAccents($aval->land->checkField($inp->id)) == stripAccents($op->option) ? 'selected' : ''}}>{{$op->option}}</option>
             @endforeach
           </select>
         @endif 
@@ -36,58 +41,58 @@
            <select onchange="saveRow('{{$aval->id}}')" class="inline-fields extra-fields" name="{{$inp->id}}">
             <option value="" selected disabled></option>
             {{-- <option value="">Elige Provincia</option> --}}
-            <option value="Álava/Araba" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Álava/Araba') ? 'selected' : ''}}>Álava/Araba</option>
-            <option value="Albacete" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Albacete') ? 'selected' : ''}}>Albacete</option>
-            <option value="Alicante" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Alicante') ? 'selected' : ''}}>Alicante</option>
-            <option value="Almería" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Almería') ? 'selected' : ''}}>Almería</option>
-            <option value="Asturias" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Asturias') ? 'selected' : ''}}>Asturias</option>
-            <option value="Ávila" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Ávila') ? 'selected' : ''}}>Ávila</option>
-            <option value="Badajoz" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Badajoz') ? 'selected' : ''}}>Badajoz</option>
-            <option value="Baleares" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Baleares') ? 'selected' : ''}}>Baleares</option>
-            <option value="Barcelona" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Barcelona') ? 'selected' : ''}}>Barcelona</option>
-            <option value="Burgos" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Burgos') ? 'selected' : ''}}>Burgos</option>
-            <option value="Cáceres" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Cáceres') ? 'selected' : ''}}>Cáceres</option>
-            <option value="Cádiz" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Cádiz') ? 'selected' : ''}}>Cádiz</option>
-            <option value="Cantabria" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Cantabria') ? 'selected' : ''}}>Cantabria</option>
-            <option value="Castellón" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Castellón') ? 'selected' : ''}}>Castellón</option>
-            <option value="Ceuta" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Ceuta') ? 'selected' : ''}}>Ceuta</option>
-            <option value="Ciudad Real" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Ciudad Real') ? 'selected' : ''}}>Ciudad Real</option>
-            <option value="Córdoba" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Córdoba') ? 'selected' : ''}}>Córdoba</option>
-            <option value="Cuenca" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Cuenca') ? 'selected' : ''}}>Cuenca</option>
-            <option value="Gerona/Girona" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Gerona/Girona') ? 'selected' : ''}}>Gerona/Girona</option>
-            <option value="Granada" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Granada') ? 'selected' : ''}}>Granada</option>
-            <option value="Guadalajara" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Guadalajara') ? 'selected' : ''}}>Guadalajara</option>
-            <option value="Guipúzcoa/Gipuzkoa" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Guipúzcoa/Gipuzkoa') ? 'selected' : ''}}>Guipúzcoa/Gipuzkoa</option>
-            <option value="Huelva" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Huelva') ? 'selected' : ''}}>Huelva</option>
-            <option value="Huesca" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Huesca') ? 'selected' : ''}}>Huesca</option>
-            <option value="Jaén" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Jaén') ? 'selected' : ''}}>Jaén</option>
-            <option value="La Coruña/A Coruña" {{strtolower($aval->land->checkField($inp->id)) == strtolower('La Coruña/A Coruña') ? 'selected' : ''}}>La Coruña/A Coruña</option>
-            <option value="La Rioja" {{strtolower($aval->land->checkField($inp->id)) == strtolower('La Rioja') ? 'selected' : ''}}>La Rioja</option>
-            <option value="Las Palmas" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Las Palmas') ? 'selected' : ''}}>Las Palmas</option>
-            <option value="León" {{strtolower($aval->land->checkField($inp->id)) == strtolower('León') ? 'selected' : ''}}>León</option>
-            <option value="Lérida/Lleida" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Lérida/Lleida') ? 'selected' : ''}}>Lérida/Lleida</option>
-            <option value="Lugo" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Lugo') ? 'selected' : ''}}>Lugo</option>
-            <option value="Madrid" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Madrid') ? 'selected' : ''}}>Madrid</option>
-            <option value="Málaga" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Málaga') ? 'selected' : ''}}>Málaga</option>
-            <option value="Melilla" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Melilla') ? 'selected' : ''}}>Melilla</option>
-            <option value="Murcia" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Murcia') ? 'selected' : ''}}>Murcia</option>
-            <option value="Navarra" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Navarra') ? 'selected' : ''}}>Navarra</option>
-            <option value="Orense/Ourense" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Orense/Ourense') ? 'selected' : ''}}>Orense/Ourense</option>
-            <option value="Palencia" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Palencia') ? 'selected' : ''}}>Palencia</option>
-            <option value="Pontevedra" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Pontevedra') ? 'selected' : ''}}>Pontevedra</option>
-            <option value="Salamanca" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Salamanca') ? 'selected' : ''}}>Salamanca</option>
-            <option value="Segovia" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Segovia') ? 'selected' : ''}}>Segovia</option>
-            <option value="Sevilla" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Sevilla') ? 'selected' : ''}}>Sevilla</option>
-            <option value="Soria" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Soria') ? 'selected' : ''}}>Soria</option>
-            <option value="Tarragona" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Tarragona') ? 'selected' : ''}}>Tarragona</option>
-            <option value="Tenerife" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Tenerife') ? 'selected' : ''}}>Tenerife</option>
-            <option value="Teruel" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Teruel') ? 'selected' : ''}}>Teruel</option>
-            <option value="Toledo" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Toledo') ? 'selected' : ''}}>Toledo</option>
-            <option value="Valencia" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Valencia') ? 'selected' : ''}}>Valencia</option>
-            <option value="Valladolid" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Valladolid') ? 'selected' : ''}}>Valladolid</option>
-            <option value="Vizcaya/Bizkaia" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Vizcaya/Bizkaia') ? 'selected' : ''}}>Vizcaya/Bizkaia</option>
-            <option value="Zamora" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Zamora') ? 'selected' : ''}}>Zamora</option>
-            <option value="Zaragoza" {{strtolower($aval->land->checkField($inp->id)) == strtolower('Zaragoza') ? 'selected' : ''}}>Zaragoza</option>
+            <option value="Álava/Araba" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Álava/Araba') ? 'selected' : ''}}>Álava/Araba</option>
+            <option value="Albacete" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Albacete') ? 'selected' : ''}}>Albacete</option>
+            <option value="Alicante" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Alicante') ? 'selected' : ''}}>Alicante</option>
+            <option value="Almería" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Almería') ? 'selected' : ''}}>Almería</option>
+            <option value="Asturias" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Asturias') ? 'selected' : ''}}>Asturias</option>
+            <option value="Ávila" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Ávila') ? 'selected' : ''}}>Ávila</option>
+            <option value="Badajoz" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Badajoz') ? 'selected' : ''}}>Badajoz</option>
+            <option value="Baleares" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Baleares') ? 'selected' : ''}}>Baleares</option>
+            <option value="Barcelona" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Barcelona') ? 'selected' : ''}}>Barcelona</option>
+            <option value="Burgos" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Burgos') ? 'selected' : ''}}>Burgos</option>
+            <option value="Cáceres" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Cáceres') ? 'selected' : ''}}>Cáceres</option>
+            <option value="Cádiz" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Cádiz') ? 'selected' : ''}}>Cádiz</option>
+            <option value="Cantabria" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Cantabria') ? 'selected' : ''}}>Cantabria</option>
+            <option value="Castellón" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Castellón') ? 'selected' : ''}}>Castellón</option>
+            <option value="Ceuta" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Ceuta') ? 'selected' : ''}}>Ceuta</option>
+            <option value="Ciudad Real" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Ciudad Real') ? 'selected' : ''}}>Ciudad Real</option>
+            <option value="Córdoba" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Córdoba') ? 'selected' : ''}}>Córdoba</option>
+            <option value="Cuenca" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Cuenca') ? 'selected' : ''}}>Cuenca</option>
+            <option value="Gerona/Girona" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Gerona/Girona') ? 'selected' : ''}}>Gerona/Girona</option>
+            <option value="Granada" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Granada') ? 'selected' : ''}}>Granada</option>
+            <option value="Guadalajara" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Guadalajara') ? 'selected' : ''}}>Guadalajara</option>
+            <option value="Guipúzcoa/Gipuzkoa" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Guipúzcoa/Gipuzkoa') ? 'selected' : ''}}>Guipúzcoa/Gipuzkoa</option>
+            <option value="Huelva" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Huelva') ? 'selected' : ''}}>Huelva</option>
+            <option value="Huesca" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Huesca') ? 'selected' : ''}}>Huesca</option>
+            <option value="Jaén" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Jaén') ? 'selected' : ''}}>Jaén</option>
+            <option value="La Coruña/A Coruña" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('La Coruña/A Coruña') ? 'selected' : ''}}>La Coruña/A Coruña</option>
+            <option value="La Rioja" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('La Rioja') ? 'selected' : ''}}>La Rioja</option>
+            <option value="Las Palmas" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Las Palmas') ? 'selected' : ''}}>Las Palmas</option>
+            <option value="León" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('León') ? 'selected' : ''}}>León</option>
+            <option value="Lérida/Lleida" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Lérida/Lleida') ? 'selected' : ''}}>Lérida/Lleida</option>
+            <option value="Lugo" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Lugo') ? 'selected' : ''}}>Lugo</option>
+            <option value="Madrid" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Madrid') ? 'selected' : ''}}>Madrid</option>
+            <option value="Málaga" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Málaga') ? 'selected' : ''}}>Málaga</option>
+            <option value="Melilla" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Melilla') ? 'selected' : ''}}>Melilla</option>
+            <option value="Murcia" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Murcia') ? 'selected' : ''}}>Murcia</option>
+            <option value="Navarra" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Navarra') ? 'selected' : ''}}>Navarra</option>
+            <option value="Orense/Ourense" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Orense/Ourense') ? 'selected' : ''}}>Orense/Ourense</option>
+            <option value="Palencia" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Palencia') ? 'selected' : ''}}>Palencia</option>
+            <option value="Pontevedra" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Pontevedra') ? 'selected' : ''}}>Pontevedra</option>
+            <option value="Salamanca" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Salamanca') ? 'selected' : ''}}>Salamanca</option>
+            <option value="Segovia" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Segovia') ? 'selected' : ''}}>Segovia</option>
+            <option value="Sevilla" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Sevilla') ? 'selected' : ''}}>Sevilla</option>
+            <option value="Soria" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Soria') ? 'selected' : ''}}>Soria</option>
+            <option value="Tarragona" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Tarragona') ? 'selected' : ''}}>Tarragona</option>
+            <option value="Tenerife" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Tenerife') ? 'selected' : ''}}>Tenerife</option>
+            <option value="Teruel" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Teruel') ? 'selected' : ''}}>Teruel</option>
+            <option value="Toledo" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Toledo') ? 'selected' : ''}}>Toledo</option>
+            <option value="Valencia" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Valencia') ? 'selected' : ''}}>Valencia</option>
+            <option value="Valladolid" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Valladolid') ? 'selected' : ''}}>Valladolid</option>
+            <option value="Vizcaya/Bizkaia" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Vizcaya/Bizkaia') ? 'selected' : ''}}>Vizcaya/Bizkaia</option>
+            <option value="Zamora" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Zamora') ? 'selected' : ''}}>Zamora</option>
+            <option value="Zaragoza" {{stripAccents($aval->land->checkField($inp->id)) == stripAccents('Zaragoza') ? 'selected' : ''}}>Zaragoza</option>
             {{-- @foreach ($inp->options as $op)
               <option >{{$op->option}}</option>
             @endforeach --}}

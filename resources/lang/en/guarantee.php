@@ -13,6 +13,7 @@ return [
 	'mwn' => 'MWN',
 	'amount' => 'Amount €',
 	'add_new_row' => '+ Add new Row',
+	'add_new_project' => '+ Add new Project',
 	'popover' => 'This section shows a summary of the total guarantees issued. It indicates whether the guarantee is pending validation, validated, pending cancellation or in recovery plan. In turn, it indicates whether access has been requested (bidden) or not (pending to bid) with the validated endorsements, and if so, whether it has been awarded (awarded) or denied (denied).',
 	'all_statuses' => 'All statuses',
 	'project' => 'Project',
@@ -27,6 +28,10 @@ return [
 	'request' => 'Request',
 	'delete' => 'Delete',
 	'delete_prompt' => 'Delete this row?',
+	'clear_table' => 'Clear table',
+	'delete_guarantees' => 'Delete all guarantees?',
 	'yes' => 'Yes, Delete',
 	'cancel' => 'Cancel',
+	'guarantee_summary_title_benbros_solar' => 'Summary Benbros Solar',
+	'guarantee_summary_title_benbros_energy' => 'Summary Benbros Energy',
 ];

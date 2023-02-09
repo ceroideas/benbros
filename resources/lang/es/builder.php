@@ -15,6 +15,7 @@ return [
 	'show_lands' => 'Mostrar en Tabla general (Terrenos)',
 	'show_summary' => 'Mostrar en Completados (Resumen)',
 	'show_guarantee' => 'Mostrar en Estados Avales',
+	'show_development' => 'Mostrar en Desarrollo',
 	'accept' => 'Aceptar',
 	'add_option' => 'Añadir opción',
 

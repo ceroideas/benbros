@@ -2,6 +2,7 @@
   <tr class="table-row" data-id="{{$c->id}}">
     <td><input onchange="saveRow('{{$c->id}}')" class="inline-fields main-fields" name="name" value="{{$c->name}}" type="text"></td>
     <td><input onchange="saveRow('{{$c->id}}')" class="inline-fields main-fields" name="last_name" value="{{$c->last_name}}" type="text"></td>
+    <td><input onchange="saveRow('{{$c->id}}')" class="inline-fields main-fields" name="company" value="{{$c->company}}" type="text"></td>
     <td><input onchange="saveRow('{{$c->id}}')" class="inline-fields main-fields" name="email" value="{{$c->email}}" type="text"></td>
     <td><input onchange="saveRow('{{$c->id}}')" class="inline-fields main-fields" name="phone" value="{{$c->phone}}" type="text"></td>
     <td><input onchange="saveRow('{{$c->id}}')" class="inline-fields main-fields" name="position" value="{{$c->position}}" type="text"></td>

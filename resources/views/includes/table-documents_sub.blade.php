@@ -1,4 +1,4 @@
-<table class="table table-striped table-hover">
+<table class="table table-striped table-hover" style="font-weight: normal !important;">
 
 	<thead style="font-size: 14px;">
 		<th colspan="2" style="width: 100px;">
@@ -21,32 +21,33 @@
 		</th>
 	</thead>
 
-	{{-- <tbody>
+	<tbody>
 		
-	</tbody> --}}
-@forelse(App\Models\BudgetDocument::orderBy('id','asc')->get() as $key => $value)
+	</tbody>
+@forelse($documents as $key => $value)
 	@php
 		$ext = array_reverse(explode('.',$value->url))[0];
 	@endphp
 	<tr class="text-center document-row" data-name="{{$value->url}}" style="cursor: pointer;">
 			
-		<td onclick="window.open('{{url('uploads/budget-documents',$value->url)}}','_blank')">
+		<td onclick="window.open('{{url('uploads/documents/subcontractors',$value->url)}}','_blank')">
 			<img src="{{url('file-images/'.$ext.'.png')}}" onerror="this.src = '{{url('file-images/file.png')}}'" style="width: 30px;" alt="">
 		</td>
-		<td title="{{ substr($value->url, 14) }}" onclick="window.open('{{url('uploads/budget-documents',$value->url)}}','_blank')">
+		<td title="{{ substr($value->url, 0) }}" onclick="window.open('{{url('uploads/documents/subcontractors',$value->url)}}','_blank')">
 			<span style="
 			text-overflow: ellipsis;
 		    white-space: nowrap;
 		    overflow: hidden;
-			position: relative; top: 4px; display: block; width: 100%; text-align: left; font-size: 13px">{{ substr($value->url, 14) }} {{ strlen($value->url) > 54 ? '' : '' }} </span>
+		    font-weight: normal !important;
+			position: relative; top: 4px; display: block; width: 100%; text-align: left; font-size: 13px">{{ substr($value->url, 0) }} {{ strlen($value->url) > 54 ? '' : '' }} </span>
 		</td>
 
 		<td>
-			<span style="font-size: 13px;">{{$value->created_at->format('d-m-Y H:i')}}</span>
+			<span style="font-size: 13px; font-weight: normal !important;">{{$value->created_at->format('d-m-Y H:i')}}</span>
 		</td>
 
 		<td>
-			<span style="font-size: 13px;">
+			<span style="font-size: 13px; font-weight: normal !important;">
 			@switch($ext)
 			    @case('csv')
 			        {{trans('documents.type_1')}}
@@ -107,9 +108,9 @@
 			
 		</td>
 
-		<td>
+		<td style="font-weight: normal !important;">
 			@php
-				$fz = filesize(public_path().('/uploads/budget-documents/'.$value->url));
+				$fz = filesize(public_path().('/uploads/documents/subcontractors/'.$value->url));
 			@endphp
 
 			<span style="font-size: 13px;">
@@ -122,7 +123,19 @@
 				@endif
 			</span>
 		</td>
-		<td>
+
+		<td style="display: flex;">
+			<select class="subcontractorStatus form-control form-control-sm" onchange="changeDocumentStatus({{$value->id}},this)" data-id="{{$value->id}}">
+				<option value="" selected disabled></option>
+				@if ($type == 1)
+					<option {{$value->status == '1' ? 'selected' : ''}} value="1">Pendiente</option>
+					<option {{$value->status == '2' ? 'selected' : ''}} value="2">Pagado</option>
+				@else
+					<option {{$value->status == '1' ? 'selected' : ''}} value="1">Firmado</option>
+					<option {{$value->status == '2' ? 'selected' : ''}} value="2">No Firmado</option>
+				@endif
+			</select>
+
 			<button class="btn btn-danger btn-sm" data-target="#delete-{{$value->id}}" data-toggle="modal"><i class="fa fa-trash"></i></button>
 
 			<div class="modal fade" id="delete-{{$value->id}}">
@@ -132,8 +145,8 @@
 							{{trans('documents.delete')}}
 						</div>
 						<div class="modal-footer">
-							<a class="btn btn-sm btn-success" href="{{url('delete-budget-document',$value->id)}}">{{trans('documents.yes')}}</a>
-							<button data-dismiss="modal" class="btn btn-sm btn-danger">{{trans('documents.no')}}</button>
+							<a class="btn btn-sm btn-success" href="{{url('delete-subcontractor-document',$value->id)}}">{{trans('documents.yes')}}</a>
+							<button class="btn btn-sm btn-danger">{{trans('documents.no')}}</button>
 						</div>
 					</div>
 				</div>

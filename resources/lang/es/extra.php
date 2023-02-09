@@ -8,6 +8,7 @@ return [
 	'delete_prompt' => '¿Borrar la Sección seleccionada? los contactos no se borrarán',
 	'name' => 'Nombre',
 	'last_name' => 'Apellido',
+	'company' => 'Empresa',
 	'email' => 'Email',
 	'phone' => 'Teléfono',
 	'position' => 'Cargo',
@@ -35,4 +36,7 @@ return [
 	'yes' => 'Si, Borrar',
 	'no' => 'Cancelar',
 	'empty' => 'Lista vacía...',
+	'contracts' => 'Facturas/Ofertas',
+	'invoices' => 'Facturas',
+	'offers' => 'Ofertas',
 ];

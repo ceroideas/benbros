@@ -8,6 +8,7 @@ return [
 	'delete_prompt' => 'Delete selected Section? contacts will not be deleted',
 	'name' => 'Name',
 	'last_name' => 'Last Name',
+	'Company' => 'Company',
 	'email' => 'Email',
 	'phone' => 'Phone',
 	'position' => 'Position',
@@ -35,4 +36,7 @@ return [
 	'yes' => 'Yes, Delete',
 	'no' => 'Cancel',
 	'empty' => 'Empty list...',
+	'contracts' => 'Invoices/Offers',
+	'invoices' => 'Invoices',
+	'offers' => 'Offers',
 ];

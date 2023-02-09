@@ -18,7 +18,7 @@
 
   <style>
     .filters th .inline-fields::placeholder {
-      color: #fff !important;
+      color: #c0c0c0 !important;
     }
   	.top-item {
   		position: relative;
@@ -66,6 +66,7 @@
   <style>
   .inline-fields {
     min-width: 182px;
+    width: 100%;
     min-height: 36px !important;
     background-color: transparent;
     border: none;
@@ -116,11 +117,11 @@
       <li class="nav-item top-item d-none d-sm-inline-block">
         <a href="javascript:void(0)" class="nav-link">{{trans('layout.menu_6')}}</a>
         <ul>
-        	<li><a href="{{url('/partners')}}">{{trans('layout.menu_partner')}}</a></li>
+        	<li><a href="{{url('/benbros-partners')}}">{{trans('layout.menu_partner')}}</a></li>
         	<li><a href="{{url('/administration-organ')}}">{{trans('layout.menu_7')}}</a></li>
         	<li><a href="{{url('/compliance-documents')}}">{{trans('layout.menu_8')}}</a></li>
           {{-- <li><a href="{{url('/proxies')}}">{{trans('layout.menu_9')}}</a></li> --}}
-          <li><a href="{{url('/documents')}}">{{trans('layout.menu_10')}}</a></li>
+          <li><a href="{{url('/legal-documents')}}">{{trans('layout.menu_10')}}</a></li>
         </ul>
       </li>
 
@@ -413,21 +414,21 @@
         $vencidas = Notification::where('type',1)->where('duration','mismo dia')->where('notification_date','<',Carbon::today()->format('Y-m-d'))->count();
 
         $one_day = Notification::where('type',1)->where('duration','mismo dia')
-          ->where('notification_date','<',Carbon::today()->format('Y-m-d'))
           ->where('notification_date','>=',Carbon::today()->addDay(1)->format('Y-m-d'))
+          ->where('notification_date','=<',Carbon::today()->addDays(2)->format('Y-m-d'))
 
           ->count();
         $two_weeks = Notification::where('type',1)->where('duration','mismo dia')
-          ->where('notification_date','<',Carbon::today()->addDay(1)->format('Y-m-d'))
           ->where('notification_date','>=',Carbon::today()->addWeeks(2)->format('Y-m-d'))
+          ->where('notification_date','=<',Carbon::today()->addWeeks(2)->addDay(1)->format('Y-m-d'))
 
           ->count();
         $six_weeks = Notification::where('type',1)->where('duration','mismo dia')
-          ->where('notification_date','<',Carbon::today()->addWeeks(2)->format('Y-m-d'))
           ->where('notification_date','>=',Carbon::today()->addWeeks(6)->format('Y-m-d'))
+          ->where('notification_date','=<',Carbon::today()->addWeeks(6)->addDay(1)->format('Y-m-d'))
 
           ->count();
-        $no_vencidas = Notification::where('type',1)->where('duration','mismo dia')->where('notification_date','>',Carbon::today()->format('Y-m-d'))->count();
+        $no_vencidas = Notification::where('type',1)->where('duration','mismo dia')->where('notification_date','>',Carbon::today()->addWeeks(6)->addDay(1)->format('Y-m-d'))->count();
       @endphp
 
       <span>{{trans('layout.expired')}}: {{$vencidas}} </span> <br>
@@ -444,24 +445,24 @@
         $vencidas_1 = Notification::where('type',2)->where('duration','mismo dia')->where('notification_date','<',Carbon::today()->format('Y-m-d'))->count();
         
         $one_day = Notification::where('type',2)->where('duration','mismo dia')
-          ->where('notification_date','<',Carbon::today()->format('Y-m-d'))
           ->where('notification_date','>=',Carbon::today()->addDay(1)->format('Y-m-d'))
+          ->where('notification_date','=<',Carbon::today()->addDays(2)->format('Y-m-d'))
 
           ->count();
         $two_weeks = Notification::where('type',2)->where('duration','mismo dia')
-          ->where('notification_date','<',Carbon::today()->addDay(1)->format('Y-m-d'))
           ->where('notification_date','>=',Carbon::today()->addWeeks(2)->format('Y-m-d'))
+          ->where('notification_date','=<',Carbon::today()->addWeeks(2)->addDay(1)->format('Y-m-d'))
 
           ->count();
         $six_weeks = Notification::where('type',2)->where('duration','mismo dia')
-          ->where('notification_date','<',Carbon::today()->addWeeks(2)->format('Y-m-d'))
           ->where('notification_date','>=',Carbon::today()->addWeeks(6)->format('Y-m-d'))
+          ->where('notification_date','=<',Carbon::today()->addWeeks(6)->addDay(1)->format('Y-m-d'))
 
           ->count();
-        $no_vencidas = Notification::where('type',2)->where('duration','mismo dia')->where('notification_date','>',Carbon::today()->format('Y-m-d'))->count();
+        $no_vencidas = Notification::where('type',2)->where('duration','mismo dia')->where('notification_date','>',Carbon::today()->addWeeks(6)->addDay(1)->format('Y-m-d'))->count();
       @endphp
 
-      <span>{{trans('layout.expired')}}: {{$vencidas}} </span> <br>
+      <span>{{trans('layout.expired')}}: {{$vencidas_1}} </span> <br>
       <span>{{trans('layout.notice_1')}}: {{$one_day}} </span> <br>
       <span>{{trans('layout.notice_2')}}: {{$two_weeks}} </span> <br>
       <span>{{trans('layout.notice_6')}}: {{$six_weeks}} </span> <br>
@@ -484,6 +485,7 @@
 <!-- REQUIRED SCRIPTS -->
 <!-- jQuery -->
 
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
 <script src="{{url('adminlte')}}/plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap -->
 <script src="{{url('adminlte')}}/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -510,8 +512,24 @@
 <script type="text/javascript" src="{{ asset('/pnotify/PNotify.js') }}"></script>
 
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.11.5/b-2.2.2/fc-4.0.2/r-2.2.9/datatables.min.css"/>
+
+<link rel="stylesheet" href="{{url('adminlte')}}/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
  
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.11.5/b-2.2.2/fc-4.0.2/r-2.2.9/datatables.min.js"></script>
+
+<!-- DataTables  & Plugins -->
+{{-- <script src="{{url('adminlte')}}/plugins/datatables/jquery.dataTables.min.js"></script> --}}
+<script src="{{url('adminlte')}}/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="{{url('adminlte')}}/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="{{url('adminlte')}}/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="{{url('adminlte')}}/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="{{url('adminlte')}}/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="{{url('adminlte')}}/plugins/jszip/jszip.min.js"></script>
+<script src="{{url('adminlte')}}/plugins/pdfmake/pdfmake.min.js"></script>
+<script src="{{url('adminlte')}}/plugins/pdfmake/vfs_fonts.js"></script>
+<script src="{{url('adminlte')}}/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="{{url('adminlte')}}/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="{{url('adminlte')}}/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 
 @yield('scripts')
 @yield('scripts1')
@@ -557,10 +575,10 @@
 
 </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.3/socket.io.js"></script>
 <script src="https://momentjs.com/downloads/moment.js"></script>
 <script>
-    var socket = io.connect('https://tuweb.me:8890');
+    var socket = io.connect('https://server.benbros.es:8890');
     socket.on('newMessage', function (data) {
         console.log(data);
         if (

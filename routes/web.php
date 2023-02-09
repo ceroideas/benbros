@@ -45,7 +45,11 @@ Route::get('login', ['uses' => function () {
 
 Route::post('login', [LoginController::class,'login']);
 
+Route::get('/changeMainProjectsProperty', [BackendController::class,'changeMainProjectsProperty']);
+
 Route::group([/*'prefix' => 'admin',*/ 'middleware' => 'auth'], function() {
+
+    Route::get('truncate-guarantees', [BackendController::class, 'truncateGuarantees']);
     //
     Route::get('/addStatus', [BackendController::class,'addStatus']);
     Route::get('/deleteStatus/{id}', [BackendController::class,'deleteStatus']);
@@ -68,6 +72,8 @@ Route::group([/*'prefix' => 'admin',*/ 'middleware' => 'auth'], function() {
     });
 
     Route::get('/lands', function () {
+        session()->forget('filters');
+        session()->forget('extras');
         return view('lands');
     });
 
@@ -116,7 +122,11 @@ Route::group([/*'prefix' => 'admin',*/ 'middleware' => 'auth'], function() {
         return view('partners');
     });
 
-    Route::get('/documents', function () {
+    Route::get('/benbros-partners', function () {
+        return view('benbros-partners');
+    });
+
+    Route::get('/legal-documents', function () {
         return view('documents');
     });
     Route::get('/contacts', function () {
@@ -142,9 +152,16 @@ Route::group([/*'prefix' => 'admin',*/ 'middleware' => 'auth'], function() {
 
 
 
+    Route::post('/changeInputOrder', [BackendController::class,'changeInputOrder']);
+
     Route::get('/addPartner', [BackendController::class,'addPartner']);
     Route::get('/deletePartner/{id}', [BackendController::class,'deletePartner']);
     Route::post('/savePartner', [BackendController::class,'savePartner']);
+
+    Route::get('/addBenbrosPartner', [BackendController::class,'addBenbrosPartner']);
+    Route::get('/deleteBenbrosPartner/{id}', [BackendController::class,'deleteBenbrosPartner']);
+    Route::post('/saveBenbrosPartner', [BackendController::class,'saveBenbrosPartner']);
+    
     Route::get('/addSubcontractor', [BackendController::class,'addSubcontractor']);
     Route::post('/saveSubcontractor', [BackendController::class,'saveSubcontractor']);
 
@@ -159,6 +176,7 @@ Route::group([/*'prefix' => 'admin',*/ 'middleware' => 'auth'], function() {
     Route::post('/createActivity', [PermissionsController::class,'createActivity']);
     Route::post('/saveActivity', [PermissionsController::class,'saveActivity']);
     Route::get('/deleteActivity/{id}', [PermissionsController::class,'deleteActivity']);
+    Route::get('/deleteASection/{id}', [PermissionsController::class,'deleteASection']);
     
     Route::post('/uploadFile', [PermissionsController::class,'uploadFile']);
     Route::post('/uploadFileProject', [PermissionsController::class,'uploadFileProject']);
@@ -196,6 +214,8 @@ Route::group([/*'prefix' => 'admin',*/ 'middleware' => 'auth'], function() {
 
     Route::post('/saveAdministrationDocument', [BackendController::class,'saveAdministrationDocument']);
     
+    Route::post('/saveSubcontractorDocument', [BackendController::class,'saveSubcontractorDocument']);
+    
     Route::get('/contract-documents', [BackendController::class,'ContractDocuments']);
     Route::get('/budget-documents', [BackendController::class,'BudgetDocuments']);
     Route::post('/saveContractDocument', [BackendController::class,'saveContractDocument']);
@@ -207,6 +227,9 @@ Route::group([/*'prefix' => 'admin',*/ 'middleware' => 'auth'], function() {
     Route::post('/generate-report', [BackendController::class,'generateReport']);
     Route::get('/summary-report', [BackendController::class,'summaryReport']);
     Route::get('/projects-report', [BackendController::class,'projectsReport']);
+    
+    Route::post('/saveInputDocument', [BackendController::class,'saveInputDocument']);
+    Route::post('/deleteInputDocument', [BackendController::class,'deleteInputDocument']);
 });
 
 Route::group(['middleware' => 'web'], function () {
@@ -222,6 +245,7 @@ Route::post('setSeen', [chatController::class, 'setSeen']);
 Route::get('profile', [LoginController::class,'profile']);
 Route::post('updateProfile', [LoginController::class,'updateProfile']);
 
+Route::post('exportWord/{id}', [BackendController::class,'exportWord']);
 Route::post('downloadPDF/{id}', [BackendController::class,'downloadPDF']);
 Route::get('change-status/{id}', [BackendController::class,'changeStatus']);
 /**/
@@ -256,3 +280,17 @@ Route::get('resetLocations', [BackendController::class, 'resetLocations']);
 Route::post('saveDataUrl', [BackendController::class, 'saveDataUrl']);
 
 Route::get('getTechnology/{id}', [BackendController::class, 'getTechnology']);
+
+
+Route::get('getKML/{id}', [BackendController::class, 'getKML']);
+
+Route::get('delete-subcontractor-document/{id}', [BackendController::class, 'deleteSubcontractorDocument']);
+
+
+Route::post('changeDocumentStatus', [BackendController::class, 'changeDocumentStatus']);
+Route::post('saveSessionFilters', [BackendController::class, 'saveSessionFilters']);
+
+
+Route::get('truncateAll', [BackendController::class, 'truncateAll']);
+/**/
+Route::get('loadPagination', [BackendController::class, 'loadPagination']);

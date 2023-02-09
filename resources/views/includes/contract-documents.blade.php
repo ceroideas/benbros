@@ -132,7 +132,7 @@
 						</div>
 						<div class="modal-footer">
 							<a class="btn btn-sm btn-success" href="{{url('delete-contract-document',$value->id)}}">Si</a>
-							<button class="btn btn-sm btn-danger">Cancelar</button>
+							<button data-dismiss="modal" class="btn btn-sm btn-danger">Cancelar</button>
 						</div>
 					</div>
 				</div>

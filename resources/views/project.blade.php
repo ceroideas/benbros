@@ -419,7 +419,8 @@
     console.log('add-section');
 
     $.get('{{url('addActivitySection',$p->id)}}', function(data, textStatus) {
-      $('#all-activities').html(data);
+      // $('#all-activities').html(data);
+      location.reload();
     });
   });
 
@@ -427,6 +428,7 @@
   {
     $.post('{{url('saveActivitySection')}}', {_token: '{{csrf_token()}}', id:$(t).data('id'), name: $.trim($(t).text()) }, function(data, textStatus, xhr) {
       // $('#all-activities').html(data);
+      // location.reload();
     });
   }
 
@@ -439,7 +441,8 @@
 
       $('[name="activity_section_id"]').val("");
       $('[name="name"]').val("");
-      $('#all-activities').html(data);
+      // $('#all-activities').html(data);
+      location.reload();
     });
   });
 
@@ -453,7 +456,8 @@
     });
 
     $.each($('.table-row[data-id="'+id+'"] .textarea'), function(index, val) {
-       formData.append($(this).attr('name'),$(this).text());
+       console.log($(this).val());
+       formData.append($(this).attr('name'),$(this).val());
     });
 
     formData.append('id',id);
@@ -469,7 +473,11 @@
     .done(function(data) {
       // console.log(data);
 
-      let points = [];
+      let points = [{
+              name: '',
+              y: ['{{Carbon\Carbon::now()}}','{{Carbon\Carbon::now()}}'],
+              color: ['white',0]
+            }];
 
       var final_h = 100;
 
@@ -478,14 +486,33 @@
             // console.log(act)
             if (act.start_date && act.end_date) {
               final_h+=40;
+
+              var color = "";
+
+              if (act.progress == 100)
+              {
+                color = 'lightgreen'
+              }else{
+                if (moment(act.end_date) < moment() && act.progress != 100)
+                {
+                  color = 'crimson'
+                }
+
+                if (moment(act.end_date) > moment() && act.progress != 100)
+                {
+                  color = 'lightblue'
+                }
+              }
               points.push({
-                name: act.name,
+                name: act.name ? act.name : '-',
                 y: [moment(act.start_date).add(1,'day').format('Y-MM-DD'), moment(act.end_date).add(1,'day').format('Y-MM-DD')],
-                color: [(moment(act.end_date) < moment() && act.progress != 100) ? 'crimson' : 'lightgreen',0.5]
+                color: [color,0.5]
               })
             }
          });
       });
+
+      console.log(points);
 
       $('#chartDiv').css('height', final_h+'px');
 
@@ -566,7 +593,8 @@
         .done(function(data) {
           console.log("success");
 
-          $('#all-activities').html(data);
+          // $('#all-activities').html(data);
+          location.reload();
 
           var notice = PNotify.success({
               title: "{{trans('projects.completed')}}",

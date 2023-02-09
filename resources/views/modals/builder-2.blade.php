@@ -14,17 +14,13 @@
 	.each-input:hover .status-button {
 		display: inline-block;
 	}
-
-	.sortable .each-input {
-	  border: 1px dashed #c0c0c0;
-	}
 </style>
 <div class="modal fade" id="builder-1">
 	
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
-				Inputs from Lands
+				Inputs from Guarantee
 			</div>
 			<div class="modal-body">
 
@@ -37,23 +33,14 @@
 				<div class="row">
 					<div class="col-sm-12">
 						<button class="btn btn-xs btn-info pull-right" onclick="addInput()">Crear input</button>
-
-						<br>
-						<br>
-
-						<a href="javascript:;" id="start-sorting">Empezar a ordenar</a> |
-
-						<a href="javascript:;" id="stop-sorting">Terminar de ordenar</a>
 					</div>
-
-
-					<div class="col-sm-12 demo" id="all-inputs">
+					<div class="col-sm-12" id="all-inputs">
 
 						<br>
 
-						@foreach (App\Models\Input::where('table','land')->orderBy('order','asc')->get() as $inp)
+						@foreach (App\Models\Input::where('table','land')->where('guarantee','!=',0)->orderBy('order','asc')->get() as $inp)
 
-							<div class="mb-3 each-input" data-id="{{$inp->id}}">
+							<div class="mb-3 each-input">
 								<label>{{$inp->title}}
 
 									<i data-id="{{$inp->id}}" class="fas fa-edit edit-button"></i>
@@ -139,7 +126,7 @@
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
-				Inputs from Lands
+				Inputs from Guarantee
 			</div>
 			<div class="modal-body">
 
@@ -157,7 +144,7 @@
 
 						<br>
 
-						@foreach (App\Models\Input::where('table','land')->orderBy('order','asc')->get() as $inp)
+						@foreach (App\Models\Input::where('table','land')->where('guarantee','!=',0)->orderBy('order','asc')->get() as $inp)
 
 							<div class="mb-3 each-input">
 								<label>{{$inp->title}}
@@ -213,7 +200,7 @@
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
-				Inputs from Lands
+				Inputs from Guarantee
 			</div>
 			<div class="modal-body">
 
@@ -231,7 +218,7 @@
 
 						<br>
 
-						@foreach (App\Models\Input::where('table','land')->orderBy('order','asc')->get() as $inp)
+						@foreach (App\Models\Input::where('table','land')->where('guarantee','!=',0)->orderBy('order','asc')->get() as $inp)
 
 							<div class="mb-3 each-input">
 								<label>{{$inp->title}}
@@ -283,8 +270,6 @@
 </div>
 
 @section('scripts1')
-<link rel="stylesheet" href="{{url('drag_drop')}}/draganddrop.css">
-<script src="{{url('drag_drop')}}/draganddrop.js" type="text/javascript"></script>
 <script>
 	
 	function changeType(elem) {
@@ -321,9 +306,11 @@
 			$.get('{{url('getTemplate')}}', function(data) {
 
 				$('#create-input').html(data);
+				$('[name="guarantee"]').prop('checked',true);
 
 				$('.saveInput').unbind('submit');
 				$('.saveInput').submit(saveAjax);
+
 			});
 		}
 	}
@@ -334,6 +321,7 @@
 		$.get('{{url('getTemplateEdit')}}/'+$(this).data('id'), function(data) {
 
 			$('#create-input').html(data);
+			$('[name="guarantee"]').prop('checked',true);
 
 			$('.saveInput').unbind('submit');
 			$('.saveInput').submit(saveAjax);
@@ -503,67 +491,6 @@
 			console.log('hecho');
 		});
 	});
-
-
-
-	/**/
-
-
-	var startSorting = function (event) {
-		// $(this).css('text-decoration', 'underline');
-		$('.demo').sortable({
-			group:true,
-			same_depth:true,
-			update:(a,b)=>{console.log(a,b)}
-		});
-	}
-	var stopSorting = function(event) {
-
-		$('.sortable').each(function() { $(this).sortable('destroy'); });
-
-		let arr = [];
-
-		$.each($('#all-inputs .each-input'), function(index, val) {
-			arr.push($(this).data('id'));
-		});
-
-		$.post('{{url('changeInputOrder')}}', {inputs: arr,_token:'{{csrf_token()}}'}, function(data, textStatus, xhr) {
-			console.log('guardado inp');
-			$('.modal').modal('hide');
-
-			setTimeout(()=>{
-				location.reload();
-			},2000);
-			setTimeout(()=>{ 
-				// $('#forms').html(data.data);
-
-				// $('#start-sorting').click(startSorting);
-				// $('#stop-sorting').click(stopSorting);
-
-				$('.add-input').click(addInput);
-
-				var notice = PNotify.success({
-		            title: "Completado",
-		            text: "Se ha guardado el orden correctamente",
-		            textTrusted: true,
-		            modules: {
-		            	Buttons: {
-		            		closer: false,
-		            		sticker: false,
-		            	}
-		            }
-		          })
-				  notice.on('click', function() {
-				    notice.close();
-				  });
-			},300);
-		});
-
-		console.log(arr);
-	}
-
-	$('#start-sorting').click(startSorting);
-	$('#stop-sorting').click(stopSorting);
 
 </script>
 @endsection

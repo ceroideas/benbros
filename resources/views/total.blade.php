@@ -59,7 +59,7 @@
                   </tr>
                   </thead>
                   <tbody>
-                    @foreach (App\Models\Land::where('analisys_state',1)->where('contract_state',2)->get() as $l)
+                    @foreach (App\Models\Land::whereIn('analisys_state',[1,3,7,10])->whereIn('contract_state',[6,8])->get() as $l)
                       <tr data-id="{{$l->id}}" class="table-row">
                         <td>{{App\Models\Partner::find($l->partner_id) ? App\Models\Partner::find($l->partner_id)->name : ''}}</td>
                         <td>{{$l->name}}</td>

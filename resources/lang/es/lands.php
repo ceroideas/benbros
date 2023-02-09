@@ -2,6 +2,8 @@
 
 return [
 
+	'main' => 'Principal',
+	'only_main' => 'Solo proyectos principales',
 	'home' => 'Home',
 	'land_summary' => 'Resumen de Terrenos',
 	'table_land_summary' => 'Tabla Resumen de Terrenos',
@@ -10,12 +12,12 @@ return [
 	'new_report' => 'Create new Report',
 	'partner' => 'Socio',
 	'total_rec' => 'Total Recibido',
-	'total_acc' => 'Total Acceptados',
+	'total_acc' => 'Total Aceptados',
 	'total_rej' => 'Total Rechazados',
 	'success' => '% Éxitoso',
 	'partner' => 'Socio',
 	'total_rec' => 'Total Recibido',
-	'total_acc' => 'Total Acceptados',
+	'total_acc' => 'Total Aceptados',
 	'total_rej' => 'Total Rechazados',
 	'success' => '% Éxitoso',
 	'import_lands' => 'Importar Terrenos',
@@ -24,7 +26,9 @@ return [
 	'month' => 'Mes',
 	'week' => 'Semana',
 	'project_name' => 'Nombre del Proyecto',
-	'analysis_state' => 'Analisis de Estado',
+	'status_request' => 'Estado de Solicitud',
+	'status_guarantee' => 'Estado de Aval',
+	'analysis_state' => 'Estado Terreno/Solicitud',
 	'contract_state' => 'Estado del Contrato',
 	'contract_negotiator' => 'Negociador de Contrato',
 	'partner_info' => 'Información del Socio',
@@ -43,7 +47,9 @@ return [
 	'general_info' => 'Información General',
 	'contract_info' => 'Información de Contrato',
 	'tech_conditions' => 'Condiciones Técnicas Generales',
+	'general_tech_conditions' => 'Condiciones Técnicas Generales',
 	'aditional_info' => 'Información Adicional',
+	'obs_aditional_info' => 'Observaciones / Información Adicional',
 	'guarantee' => 'Aval',
 	'project_info' => 'Información de Proyecto',
 	'generate_report' => 'Generar Reporte',
@@ -51,6 +57,7 @@ return [
 	'delete' => 'Borrar esta fila?',
 	'yes' => 'Si, Borrar',
 	'cancel' => 'Cancelar',
+	'binder' => 'Carpeta',
 	'empty' => 'Lista vacía...',
 
 ];

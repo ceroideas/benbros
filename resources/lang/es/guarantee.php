@@ -13,6 +13,7 @@ return [
 	'mwn' => 'MWn',
 	'amount' => 'Importe €',
 	'add_new_row' => '+ Añadir nueva columna',
+	'add_new_project' => '+ Añadir nuevo Proyecto',
 	'popover' => 'En este apartado se muestra un resumen del total avales emitidos. Se indica si el aval está pendiente de validación, validado, pendiente de cancelación o en recovery plan. A su vez, se indica si con los avales validados se ha solicitado el acceso (bidden) o no (pending to bid), y en caso afirmativo si se ha consegido (awarded) o se ha denegado (denied).',
 	'all_statuses' => 'Todos los Estados',
 	'project' => 'Proyecto',
@@ -27,6 +28,10 @@ return [
 	'request' => 'Solicitud',
 	'delete' => 'Borrar',
 	'delete_prompt' => '¿Borrar ésta fila?',
+	'clear_table' => 'Limpiar tabla',
+	'delete_guarantees' => '¿Borrar todos los avales?',
 	'yes' => 'Si, Borrar',
 	'cancel' => 'Cancelar',
+	'guarantee_summary_title_benbros_solar' => 'Resumen Benbros Solar',
+	'guarantee_summary_title_benbros_energy' => 'Resumen Benbros Energy',
 ];

@@ -2,6 +2,8 @@
 
 return [
 
+	'main' => 'Main Project',
+	'only_main' => 'Only main projects',
 	'home' => 'Home',
 	'land_summary' => 'Land Summary',
 	'table_land_summary' => 'Summary',
@@ -20,11 +22,13 @@ return [
 	'success' => '% Success',
 	'import_lands' => 'Import Land',
 	'id' => 'Id',
-	'partner' => 'Socio',
+	'partner' => 'Partner',
 	'month' => 'Month',
 	'week' => 'Week',
 	'project_name' => 'Project Name',
 	'analysis_state' => 'Analysis status',
+	'status_request' => 'Request Status',
+	'status_guarantee' => 'Guarantee Status',
 	'contract_state' => 'Contract status',
 	'contract_negotiator' => 'Contract negotiator',
 	'partner_info' => 'Partner info',
@@ -43,7 +47,9 @@ return [
 	'general_info' => 'General Information',
 	'contract_info' => 'Contract information',
 	'tech_conditions' => 'Technical conditions',
+	'general_tech_conditions' => 'General Technical Conditions',
 	'aditional_info' => 'Additional information',
+	'obs_aditional_info' => 'Observations / Additional information',
 	'guarantee' => 'Guarantee',
 	'project_info' => 'Project Information',
 	'generate_report' => 'Generate report',
@@ -51,6 +57,7 @@ return [
 	'delete' => 'Delete row?',
 	'yes' => 'Yes, delete',
 	'cancel' => 'Cancel',
+	'binder' => 'Folder',
 	'empty' => 'Empty list…',
 
 ];

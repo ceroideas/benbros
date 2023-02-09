@@ -26,25 +26,53 @@
   <div class="container-fluid">
     <!-- Info boxes -->
     <div class="row">
-      <div class="col-12 col-sm-6 col-md-3">
-        <div class="info-box">
-          <span class="info-box-icon bg-success elevation-1"><i class="fas fa-check"></i></span>
+      <div class="col-sm-3">
+        
+        <div class="row">
+          
+          <div class="col-6">
+            <div class="info-box">
+              <span class="info-box-icon bg-info elevation-1"><i class="fas fa-check"></i></span>
 
-          <div class="info-box-content">
-            <span class="info-box-number">
-              {{ App\Models\Land::whereExists(function($q){
-                $q->from('endorsements')
-                  ->whereRaw('endorsements.guarantee_status = 9')
-                  ->whereRaw('endorsements.request_status = 6')
-                  ->whereRaw('endorsements.land_id = lands.id');
-              })->sum('mwn') }}
-              {{-- <small>%</small> --}}
-            </span>
-            <span class="info-box-text">{{trans('layout.mw_accecpted')}}</span>
+              <div class="info-box-content">
+                <span class="info-box-number">
+                  {{ number_format(App\Models\Land::whereExists(function($q){
+                                      $q->from('endorsements')
+                                        ->whereRaw('endorsements.guarantee_status = 9')
+                                        ->whereRaw('endorsements.request_status = 6')
+                                        ->whereRaw('endorsements.land_id = lands.id');
+                                    })->sum('mwn'),2) }}
+                  {{-- <small>%</small> --}}
+                </span>
+                <span class="info-box-text">{{trans('layout.mw_awarded')}}</span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
           </div>
-          <!-- /.info-box-content -->
+          <div class="col-6">
+            <div class="info-box">
+              <span class="info-box-icon bg-success elevation-1"><i class="fas fa-check"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-number">
+                  {{ number_format(App\Models\Land::whereExists(function($q){
+                                      $q->from('endorsements')
+                                        ->whereRaw('endorsements.guarantee_status = 9')
+                                        ->whereRaw('endorsements.request_status = 11')
+                                        ->whereRaw('endorsements.land_id = lands.id');
+                                    })->sum('mwn'),2) }}
+                  {{-- <small>%</small> --}}
+                </span>
+                <span class="info-box-text">{{trans('layout.mw_accecpted')}}</span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+
         </div>
-        <!-- /.info-box -->
+
       </div>
       <!-- /.col -->
       <div class="col-12 col-sm-6 col-md-3">
@@ -53,12 +81,12 @@
 
           <div class="info-box-content">
             <span class="info-box-number">
-              {{ App\Models\Land::whereExists(function($q){
-                $q->from('endorsements')
-                ->whereRaw('endorsements.guarantee_status = 9')
-                  ->whereRaw('endorsements.request_status = 5')
-                  ->whereRaw('endorsements.land_id = lands.id');
-              })->sum('mwn') }}
+              {{ number_format(App\Models\Land::whereExists(function($q){
+                              $q->from('endorsements')
+                              ->whereRaw('endorsements.guarantee_status = 9')
+                                ->whereRaw('endorsements.request_status = 5')
+                                ->whereRaw('endorsements.land_id = lands.id');
+                            })->sum('mwn'),2) }}
               {{-- <small>%</small> --}}
             </span>
             <span class="info-box-text">{{trans('layout.mw_pending')}}</span>
@@ -74,12 +102,12 @@
 
           <div class="info-box-content">
             <span class="info-box-number">
-              {{ App\Models\Land::whereExists(function($q){
-                $q->from('endorsements')
-                ->whereRaw('endorsements.guarantee_status = 9')
-                  ->whereRaw('endorsements.request_status = 7')
-                  ->whereRaw('endorsements.land_id = lands.id');
-              })->sum('mwn') }}
+              {{ number_format(App\Models\Land::whereExists(function($q){
+                              $q->from('endorsements')
+                              ->whereRaw('endorsements.guarantee_status = 9')
+                                ->whereRaw('endorsements.request_status = 7')
+                                ->whereRaw('endorsements.land_id = lands.id');
+                            })->sum('mwn'),2) }}
               {{-- <small>%</small> --}}
             </span>
             <span class="info-box-text">{{trans('layout.mw_rejected')}}</span>
@@ -634,11 +662,11 @@
       let addresses2 = [];
 
       @foreach (App\Models\Technology::all() as $tech)
-        @foreach (App\Models\Land::where('analisys_state',1)->where('contract_state',2)->where('technology',$tech->id)->get() as $l)
+        @foreach (App\Models\Land::whereIn('analisys_state',[1,3,7,10])->whereIn('contract_state',[6,8])->where('technology',$tech->id)->get() as $l)
           @if ($l->lat && $l->lng)
             markers1.push(['{{$l->lat}}', '{{$l->lng}}', '{{$tech->map_marker}}']);
           @else
-            addresses1.push({id: {{$l->id}}, address: '{{$l->checkField(158)}}, {{$l->checkField(159)}}' });
+            addresses1.push({id: {{$l->id}}, address: `{{$l->checkField(158)}}, {{$l->checkField(159)}}, España` });
           @endif
         @endforeach
       @endforeach
@@ -751,7 +779,7 @@
         html+=`<div style="line-height: 1.6">`
         html+=`<b>{{trans('layout.project_name')}}:</b> ${m.name} <br>`
         html+=`<b>{{trans('layout.tech')}}:</b> ${tech} <br>`
-        html+=`<b>{{trans('layout.partner')}}:</b> ${m.partner.name} <br>`
+        html+=`<b>{{trans('layout.partner')}}:</b> ${m.partner ? m.partner.name : '--'} <br>`
         html+=`<b>{{trans('layout.set')}}:</b> ${m.substation} <br>`
         html+=`<b>{{trans('layout.km_set')}}:</b> ${m.substation_km} <br>`
         html+=`<b>{{trans('layout.mwpn')}}:</b> ${m.mwp || 0} / ${m.mwn || 0} <br> `

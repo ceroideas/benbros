@@ -59,7 +59,7 @@
 	}
 
 	.card-body {
-		max-height: 253px;
+		max-height: 603px;
 		overflow: auto;
 	}
 

@@ -4,6 +4,9 @@ namespace App\Imports;
 
 use App\Models\Land;
 use App\Models\Input;
+use App\Models\Activity;
+use App\Models\Technology;
+use App\Models\ActivitySection;
 use App\Models\Permission;
 use App\Models\Partner; // empresa colaboradora
 use Maatwebsite\Excel\Concerns\ToModel;
@@ -20,25 +23,43 @@ class LandsImport implements ToModel, WithHeadingRow
         switch ($name) {
 
             case 'Aceptada Ficticio':
-                return 6;
-                break;
-            case 'En Estudio':
-                return 3;
-                break;
-            case 'Aceptada':
                 return 1;
                 break;
-            case 'Descartada':
+            case 'En Estudio':
                 return 2;
                 break;
-            case 'Para Aclarar':
+            case 'Aceptada':
+                return 3;
+                break;
+            case 'Descartada':
                 return 4;
                 break;
-            case 'Para Posicionamiento':
+            case 'Para Aclarar':
                 return 5;
                 break;
-            default:
-                return null;
+            case 'Para Posicionamiento':
+                return 6;
+                break;
+            case 'Aceptada Ficticio 5':
+                return 7;
+                break;
+            case 'Tramitación':
+                return 8;
+                break;
+            case 'Posicionar con mas Terrenos':
+                return 9;
+                break;
+            case 'Aceptada 5 MW Real':
+                return 10;
+                break;
+            case 'Prioridad concurso/distribución':
+                return 11;
+                break;
+            case 'Pendiente de Oferta':
+                return 12;
+                break;
+            case 'Sin Terreno':
+                return 13;
                 break;
         }
     }
@@ -46,6 +67,12 @@ class LandsImport implements ToModel, WithHeadingRow
     {
         switch ($name) {
 
+            case 'Sin identificar':
+                return 1;
+                break;
+            case 'PTE Contrato Propiedad':
+                return 2;
+                break;
             case 'Negociación':
                 return 3;
                 break;
@@ -53,21 +80,28 @@ class LandsImport implements ToModel, WithHeadingRow
                 return 4;
                 break;
             case 'Sin Acuerdo':
-                return 1;
-                break;
-            case 'Firmado':
-                return 2;
-                break;
-            case 'No Posible':
                 return 5;
                 break;
+            case 'Firmado':
+                return 6;
+                break;
+            case 'No Posible':
+                return 7;
+                break;
             case 'Firmado Solar':
-                return 2;
+                return 8;
                 break;
             default:
                 return null;
                 break;
         }
+    }
+
+    public function normalizeStr($str)
+    {
+        return preg_replace_callback('/\\\\u([0-9a-fA-F]{4})/', function ($match) {
+            return mb_convert_encoding(pack('H*', $match[1]), 'UTF-8', 'UCS-2BE');
+        }, $str);
     }
 
     public function getInputValue($row)
@@ -80,8 +114,8 @@ class LandsImport implements ToModel, WithHeadingRow
             foreach (Input::where('table','land')->get() as $key2 => $i) {
                 // echo Str::slug($i->title, '_').' - '.$key.' <br> ';
                 if (Str::slug($i->getRawOriginal('title'), '_') == $key) {
-                    $final_json[] = ['id'=>$i->id, 'value' => trim($value)];
-                    \Log::info($value);
+                    \Log::info($this->stripAccents($value));
+                    $final_json[] = ['id'=>$i->id, 'value' => $this->stripAccents($value)];
                 }
             }
         }
@@ -89,45 +123,78 @@ class LandsImport implements ToModel, WithHeadingRow
         return json_encode($final_json);
     }
 
+    public function stripAccents($str) {
+        return strtr(utf8_decode($str), utf8_decode('àáâãäçèéêëìíîïñòóôõöùúûüýÿÀÁÂÃÄÇÈÉÊËÌÍÎÏÑÒÓÔÕÖÙÚÛÜÝ/'), 'aaaaaceeeeiiiinooooouuuuyyAAAAACEEEEIIIINOOOOOUUUUY-');
+    }
+
+    public function getTechnology($name)
+    {
+        $t = Technology::where('name','like','%'.$name.'%')->first();
+
+        if ($t) {
+            return $t->id;
+        }
+
+        return null;
+    }
+
     public function model(array $row)
     {
-    	// dd(json_encode($row));
+        $p = null;
 
-        if (isset($row['empresa_colaboradora'])) {
-            $p = Partner::where('name',$row['empresa_colaboradora'])->first();
+        if (isset($row['socio'])) {
+            $p = Partner::where('name',$row['socio'])->first();
 
             if (!$p) {
                 $p = new Partner;
-                $p->name = $row['empresa_colaboradora'];
+                $p->name = $row['socio'];
                 $p->save();
             }
+        }
 
-            // $l = Land::where('name',$row['nombre_del_proyecto'])->where('month',$row['mes'])->where('week',$row['semana'])->first();
-            // if (!$l) {
-                $l = new Land;
-            // }
+        $l = Land::where('name',$row['nombre_del_proyecto'])
+        /*->where('carpeta',$row['carpeta'])*/->where('technology',$this->getTechnology($row['tecnologia']))
+        ->where(function($q) use($row){
+            if ($row['id']) {
+                $q->where('id',$row['id']);
+            }
+        })
+        /*->where(function($q) use($p){
+            if ($p) {
+                $q->where('partner_id',$p->id);
+            }
+        })*/->first();
+
+        if (!$l) {
+            $l = new Land;
+            
+            $l->name = isset($row['principal']) ? ($row['principal'] == 1 ? 1 : null) : null;
+
+            $l->id = $row['id'];
             $l->partner_id = $p ? $p->id : null;
-            $l->month = $row['mes'];
-            $l->week = $row['semana'];
-            $l->name = $row['nombre_proyecto'];
+            // $l->month = $row['mes'];
+            // $l->week = $row['semana'];
+            $l->carpeta = (int)$row['carpeta'];
+            $l->name = $row['nombre_del_proyecto'];
 
             $l->negotiator = $row['negociador_contrato'];
             // partner_info
-            $l->mwp = number_format((int)$row['mwp_estimados'],2);
-            $l->mwn = number_format((int)$row['mw_nominales'],2);
+            $l->mwp = isset($row['mwp']) ? strval($row['mwp']) : 0;
+            $l->mwn = strval($row['mwn']);
 
             $l->substation = $row['set'];
             $l->substation_km = $row['km_set'];
 
-            $l->analisys_state = $this->getAnalisysState($row['estado_operacion']);
-            $l->contract_state = $this->getAnalysisState($row['estado_contrato']);
+            $l->analisys_state = $this->getAnalisysState($row['estado_terrenosolicitud']);
+            $l->contract_state = $this->getAnalysisState($row['estado_del_contrato']);
 
-            $l->technology = 1;
+            $l->technology = $this->getTechnology($row['tecnologia']);
 
             $l->extra_inputs = $this->getInputValue($row);
             $l->save();
 
-            if ($l->analisys_state == 1 && $l->contract_state == 2) {
+            if (($l->analisys_state == 1 || $l->analisys_state == 3 || $l->analisys_state == 7 || $l->analisys_state == 10)
+                && ($l->contract_state == 6 || $l->contract_state == 8)) {
 
                 $p = Permission::where('land_id',$l->id)->first();
 
@@ -139,6 +206,7 @@ class LandsImport implements ToModel, WithHeadingRow
                     $this->generateActivities($p->id);
                 }
             }
+            /**/
         }
     }
 

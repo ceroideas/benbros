@@ -14,14 +14,21 @@
       @endphp
     @endif
 	</td>
-	<td>
+	{{-- <td>
     <span style="display: none">{{$p->tramitation_type}}</span>
     <select onchange="saveRow('{{$p->id}}')" class="inline-fields main-fields" name="tramitation_type">
         <option value="" selected disabled></option>
         <option value="Concurso" {{$p->tramitation_type == 'Concurso' ? 'selected' : ''}}>{{trans('layout.conc')}}</option>
         <option value="Solicitud AyC" {{$p->tramitation_type == 'Solicitud AyC' ? 'selected' : ''}}>{{trans('layout.solic')}}</option>
     </select>
+  </td> --}}
+
+  @foreach ($inputs as $inp)
+  <td>
+    {{$p->land->checkField($inp->id)}}
   </td>
+  @endforeach
+
   <td>
     <div class="input-group" style="min-width: 300px;">
       <input id="file-1{{$p->id}}" type="file" name="file" class="document form-control" required>
@@ -75,16 +82,40 @@
     @if ($sect->inputs)
         @foreach ($sect->inputs as $inp)
           <td style="min-width: 120px;">
-            @if ($inp->sameAsActivity())
-              {{$p->checkField($inp->id)}}
-              <input type="hidden" class="inline-fields extra-fields" name="{{$inp->id}}" value="{{$p->checkField($inp->id)}}">
+            @if ($inp->type == 'document')
+
+              <div class="input-group" style="min-width: 300px;">
+                <input id="file-{{$p->id}}-{{$inp->id}}" type="file" name="file" class="document form-control" required>
+
+                <button type="button" onclick="uploadFile2(this)" data-action="{{url('saveInputDocument')}}" data-input_id="{{$inp->id}}" data-id="{{$p->id}}" class="btn btn-info">Save</button>
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#documents-{{$p->id}}-{{$inp->id}}"><i class="fa far fa-eye"></i></button>
+              </div>
+              <div class="modal fade" id="documents-{{$p->id}}-{{$inp->id}}" style="font-weight: normal !important;">
+                <div class="modal-dialog modal-lg">
+                  <div class="modal-content">
+                    <div class="modal-header">{{$inp->title}}</div>
+                    <div class="modal-body">
+                      @include('includes.table-input-documents', ['documents' => App\Models\InputDocument::where('permission_id',$p->id)->where('input_id',$inp->id)->get()])
+                    </div>
+                    <div class="modal-footer">
+                      <button data-dismiss="modal" class="btn btn-sm btn-success">OK</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
             @else
-              <select onchange="saveRow('{{$p->id}}')" class="inline-fields extra-fields" name="{{$inp->id}}">
-                <option value="" selected disabled></option>
-                @foreach ($inp->options as $op)
-                  <option {{$p->checkField($inp->id) == $op->option ? 'selected' : ''}}>{{$op->option}}</option>
-                @endforeach
-              </select>
+              @if ($inp->sameAsActivity())
+                {{$p->checkField($inp->id)}}
+                <input type="hidden" class="inline-fields extra-fields" name="{{$inp->id}}" value="{{$p->checkField($inp->id)}}">
+              @else
+                <select onchange="saveRow('{{$p->id}}')" class="inline-fields extra-fields" name="{{$inp->id}}">
+                  <option value="" selected disabled></option>
+                  @foreach ($inp->options as $op)
+                    <option {{$p->checkField($inp->id) == $op->option ? 'selected' : ''}}>{{$op->option}}</option>
+                  @endforeach
+                </select>
+              @endif
             @endif
           </td>
         @endforeach

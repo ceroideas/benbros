@@ -42,6 +42,7 @@
 
                 <form action="{{url('uploadExcel2')}}" method="POST" enctype="multipart/form-data" style="float: right;">
                   {{csrf_field()}}
+                  <label style="margin-right: 8px" class="btn btn-warning btn-xs" data-target="#delete-guarantee" data-toggle="modal">{{trans('guarantee.clear_table')}}</label>
                   <label class="btn btn-success btn-xs">{{trans('guarantee.import')}}<input type="file" name="file" style="display: none;"></label>
                 </form>
                 <div style="clear: both;"></div>
@@ -91,15 +92,35 @@
                 <br>
 
                 {{-- <button class="btn btn-danger float-right" style="margin-left: 4px;">Delete Row/Column</button> --}}
-                <button class="btn btn-success float-right" data-toggle="modal" data-target="#builder-2" style="margin-left: 4px;">{{trans('guarantee.add_new_row')}}</button>
+                <button class="btn btn-success float-right" data-toggle="modal" data-target="#builder-guarantee" style="margin-left: 4px;">{{trans('guarantee.add_new_project')}}</button>
+
+                <button class="btn btn-success" data-toggle="modal" data-target="#builder-1" style="margin-left: 4px;">{{trans('lands.add_new_column')}}</button>
+                {{-- <button class="btn btn-warning" data-toggle="modal" data-target="#builder-2" style="margin-left: 4px;">{{trans('lands.show_hide_column')}}</button> --}}
+                <button class="btn btn-danger" data-toggle="modal" data-target="#builder-3" style="margin-left: 4px;">{{trans('lands.delete_column')}}</button>
+
 
                 <br>
                 <br>
 
                 <img src="{{url('inf.png')}}" style="width: 20px;position: relative;top: -3px;" data-toggle="popover" data-content="{{trans('guarantee.popover')}}" alt="">
 
+                <br>
+
+                <h3>{{trans('guarantee.guarantee_summary_title_benbros_solar')}}</h3>
+
                 <div id="summary">
-		              @include('includes.guarantee_summary')
+		              @include('includes.guarantee_summary', ['id' => '197', 'soc' => 'solar'])
+                </div>
+
+
+                <br>
+
+
+
+                <h3>{{trans('guarantee.guarantee_summary_title_benbros_energy')}}</h3>
+
+                <div id="summary">
+                  @include('includes.guarantee_summary', ['id' => '197', 'soc' => 'energy'])
                 </div>
 
               </div>
@@ -114,8 +135,24 @@
       <!-- /.container-fluid -->
     </section>
 
+    <div class="modal fade" id="delete-guarantee">
+  
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            {{trans('guarantee.delete_guarantees')}}
+          </div>
+          <div class="modal-footer">
+            <a class="btn btn-primary" href="{{url('truncate-guarantees')}}">{{trans('guarantee.yes')}}</a>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">{{trans('guarantee.no')}}</button>
+          </div>
+        </div>
+      </div>
 
-    <div class="modal fade" id="builder-2">
+    </div>
+
+
+    <div class="modal fade" id="builder-guarantee">
   
       <div class="modal-dialog">
         <form class="modal-content" action="{{url('addNewGuarantee')}}" method="POST">
@@ -193,6 +230,8 @@
       </div>
 
     </div>
+
+    @include('modals.builder-2')
 
 @endsection
 

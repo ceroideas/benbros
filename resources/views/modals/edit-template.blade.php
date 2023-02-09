@@ -53,6 +53,11 @@
 	  	        <label>{{trans('builder.show_guarantee')}}</label> <br>
 	            <input type="checkbox" name="guarantee" {{$inp->guarantee ? 'checked' : ''}} />
 	  	      </div>
+
+	  	      <div class="form-group">
+              <label>{{trans('builder.show_development')}}</label> <br>
+              <input type="checkbox" name="development" {{$inp->development ? 'checked' : ''}}/>
+            </div>
       	</div>
       </div>
 

@@ -54,13 +54,35 @@ Learn how to:
           {
             name: 'one',
             points: [
+            {
+              name: '',
+              y: ['{{Carbon\Carbon::now()}}','{{Carbon\Carbon::now()}}'],
+              color: ['white',0]
+            },
             @foreach (App\Models\ActivitySection::where('permission_id',$p->id)->get() as $as)
               @foreach ($as->activities as $act)
                 @if ($act->start_date && $act->end_date)
                   {
                     name: '{{$act->name}}',
                     y: ['{{Carbon\Carbon::parse($act->start_date)}}', '{{Carbon\Carbon::parse($act->end_date)}}'],
-                    color: ['{{ (Carbon\Carbon::parse($act->end_date) < Carbon\Carbon::now() && $act->progress != 100) ? 'crimson' : 'lightgreen' }}', 0.5],
+                    color: [
+                    '@php
+
+                      if ($act->progress == 100)
+                      {
+                        echo 'lightgreen';
+                      }else{
+                        if (Carbon\Carbon::parse($act->end_date) < Carbon\Carbon::now() && $act->progress != 100)
+                        {
+                          echo 'crimson';
+                        }
+
+                        if (Carbon\Carbon::parse($act->end_date) > Carbon\Carbon::now() && $act->progress != 100)
+                        {
+                          echo 'lightblue';
+                        }
+                      }
+                    @endphp', 0.5],
                   },
                 @endif
               @endforeach
@@ -91,9 +113,9 @@ Learn how to:
 
       $('#chartDiv').css('height', final_h+'px');
 
-      var imgchart = chart.toBase64Image();
+      // var imgchart = chart.toBase64Image();
 
-      console.log(imgchart);
+      // console.log(imgchart);
 </script>
 
 @endsection

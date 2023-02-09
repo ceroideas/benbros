@@ -17,7 +17,19 @@
 					<td>Total {{$st->name}}</td>
 					<td>
 						@php
-							$sub_ttl_am = App\Models\Endorsement::where('guarantee_status',$st->id)->sum('ammount');
+							$sub_ttl_am = App\Models\Endorsement::where('guarantee_status',$st->id)->
+
+							whereExists(function($q) use($id,$soc){
+								$q->from('lands')
+								  ->whereRaw('lands.id = endorsements.land_id')
+								  ->where(function($qq) use($id,$soc){
+								  	$qq->where('extra_inputs','like','%'.$id.'%')
+                               		->where('extra_inputs','like','%'.$soc.'%');
+								  });
+							})->
+
+
+							sum('ammount');
 							$total_amount += $sub_ttl_am;
 							echo number_format($sub_ttl_am,2).'€'
 						@endphp
@@ -28,6 +40,9 @@
 								$q->from('endorsements')
 								  ->whereRaw('endorsements.guarantee_status = '.$st->id)
 								  ->whereRaw('endorsements.land_id = lands.id');
+							})->where(function($q) use($id,$soc){
+								$q->where('extra_inputs','like','%'.$id.'%')
+                               	  ->where('extra_inputs','like','%'.$soc.'%');
 							})->sum('mwn');
 							$total_mwn += $sub_ttl_mwn;
 							echo number_format($sub_ttl_mwn,2);
@@ -43,37 +58,6 @@
 					<th>{{ number_format($total_mwn,2) }}</th>
 				</tr>
 			</tfoot>
-
-			{{-- <tr>
-				<td>Total Pending Validation</td>
-				<td>{{ number_format(App\Models\Endorsement::where('guarantee_status',2)->sum('ammount'),2) }}€</td>
-				<td>{{ App\Models\Land::whereExists(function($q){
-					$q->from('endorsements')
-					  ->whereRaw('endorsements.guarantee_status = 2')
-					  ->whereRaw('endorsements.land_id = lands.id');
-				})->sum('mwn') }}</td>
-			</tr>
-
-			<tr>
-				<td>Total Cancelled</td>
-				<td>{{ number_format(App\Models\Endorsement::where('guarantee_status',3)->sum('ammount'),2) }}€</td>
-				<td>{{ App\Models\Land::whereExists(function($q){
-					$q->from('endorsements')
-					  ->whereRaw('endorsements.guarantee_status = 3')
-					  ->whereRaw('endorsements.land_id = lands.id');
-				})->sum('mwn') }}</td>
-			</tr>
-
-			<tr>
-				<td>Total Pending Cancellation</td>
-				<td>{{ number_format(App\Models\Endorsement::where('guarantee_status',4)->sum('ammount'),2) }}€</td>
-				<td>{{ App\Models\Land::whereExists(function($q){
-					$q->from('endorsements')
-					  ->whereRaw('endorsements.guarantee_status = 4')
-					  ->whereRaw('endorsements.land_id = lands.id');
-				})->sum('mwn') }}</td>
-			</tr> --}}
-
 		</table>
 	</div>
 
@@ -89,34 +73,28 @@
 			@foreach (App\Models\Status::where('type','request')->get() as $st)
 				<tr>
 					<td>Total {{$st->name}}</td>
-					<td>{{ number_format(App\Models\Endorsement::where('request_status',$st->id)->sum('ammount'),2) }}€</td>
-					<td>{{ App\Models\Land::whereExists(function($q) use($st){
+					<td>{{ number_format(App\Models\Endorsement::where('request_status',$st->id)->
+
+						whereExists(function($q) use($id,$soc){
+								$q->from('lands')
+								  ->whereRaw('lands.id = endorsements.land_id')
+								  ->where(function($qq) use($id,$soc){
+								  	$qq->where('extra_inputs','like','%'.$id.'%')
+                               		->where('extra_inputs','like','%'.$soc.'%');
+								  });
+							})->
+
+					sum('ammount'),2) }}€</td>
+					<td>{{ number_format( App\Models\Land::whereExists(function($q) use($st){
 						$q->from('endorsements')
 						  ->whereRaw('endorsements.request_status = '.$st->id)
 						  ->whereRaw('endorsements.land_id = lands.id');
-					})->sum('mwn') }}</td>
+					})->where(function($q) use($id,$soc){
+						$q->where('extra_inputs','like','%'.$id.'%')
+                       	  ->where('extra_inputs','like','%'.$soc.'%');
+					})->sum('mwn'),2) }}</td>
 				</tr>
 			@endforeach               	
-
-			{{-- <tr>
-				<td>Total Granted</td>
-				<td>{{ number_format(App\Models\Endorsement::where('request_status',2)->sum('ammount'),2) }}€</td>
-				<td>{{ App\Models\Land::whereExists(function($q){
-					$q->from('endorsements')
-					  ->whereRaw('endorsements.request_status = 2')
-					  ->whereRaw('endorsements.land_id = lands.id');
-				})->sum('mwn') }}</td>
-			</tr>
-
-			<tr>
-				<td>Total Denied</td>
-				<td>{{ number_format(App\Models\Endorsement::where('request_status',3)->sum('ammount'),2) }}€</td>
-				<td>{{ App\Models\Land::whereExists(function($q){
-					$q->from('endorsements')
-					  ->whereRaw('endorsements.request_status = 3')
-					  ->whereRaw('endorsements.land_id = lands.id');
-				})->sum('mwn') }}</td>
-			</tr> --}}
 
 		</table>
 	</div>

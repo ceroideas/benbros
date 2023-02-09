@@ -59,7 +59,7 @@
 	    <td><input type="text" name="responsable_benbros" onchange="saveRow('{{$act->id}}')" class="inline-fields main-fields" value="{{$act->responsable_benbros}}"></td>
 	    <td><input type="text" name="responsable_external" onchange="saveRow('{{$act->id}}')" class="inline-fields main-fields" value="{{$act->responsable_external}}"></td>
 	    <td><input type="text" name="administrative" onchange="saveRow('{{$act->id}}')" class="inline-fields main-fields" value="{{$act->administrative}}"></td>
-	    <td> <textarea name="commentary" onchange="saveRow('{{$act->id}}')" class="inline-fields textarea" rows="4"></textarea> </td>
+	    <td> <textarea name="commentary" onchange="saveRow('{{$act->id}}')" class="inline-fields textarea" rows="4">{{$act->commentary}}</textarea> </td>
 	    {{-- <td></td>
 	    <td><input type="date" name="real_date" onchange="saveRow('{{$act->id}}')" class="inline-fields main-fields" value="{{$act->real_date}}"></td> --}}
 	    {{-- <td>
@@ -93,11 +93,25 @@
 	@empty
 		<tr>
 				<td style="vertical-align: middle;">
+
+		  		<i class="fas fa-trash" data-toggle="modal" data-target="#delete-section{{$as->id}}" data-id="{{$as->id}}" style="/*position: absolute; top: 8px; left: 8px;*/ cursor: pointer;"></i>
 		  		<div contenteditable onblur="saveSection(this)" data-id="{{$as->id}}">
 		  			{{$as->name}}
 		  		</div>
 		  	</td>
 		</tr>
+
+		<div class="modal fade" id="delete-section{{$as->id}}">
+		    <div class="modal-dialog">
+		      <div class="modal-content">
+		        <div class="modal-header">Delete this section?</div>
+		        <div class="modal-footer">
+		          <a href="{{url('deleteASection',$as->id)}}" class="btn btn-sm btn-success">Yes, Delete</a>
+		          <button class="btn btn-sm btn-warning" data-dismiss="modal">Cancel</button>
+		        </div>
+		      </div>
+		    </div>
+		  </div>
 	@endforelse
 	<tr>
 		<td colspan="10"></td>
